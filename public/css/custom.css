@@ -1,0 +1,4 @@
+.form-group label.required strong:after{
+    content: "*";
+    color: red;
+}

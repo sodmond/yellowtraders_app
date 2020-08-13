@@ -9,11 +9,14 @@
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
+        <!-- Favicon -->
+        <link href="{{ asset('images/logo.png') }}" rel="icon" type="image/png">
+
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #fff;
-                color: #636b6f;
+                background-color: #222;
+                color: #fafafa;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
                 height: 100vh;
@@ -45,11 +48,11 @@
             }
 
             .title {
-                font-size: 84px;
+                font-size: 74px;
             }
 
             .links > a {
-                color: #636b6f;
+                color: #fafafa;
                 padding: 0 25px;
                 font-size: 13px;
                 font-weight: 600;
@@ -61,12 +64,20 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+
+            .apply a{
+                background: #EEB220;
+                color: #000;
+                padding: 15px;
+                margin: 10px;
+                border-radius: 10px;
+            }
         </style>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
-                <div class="top-right links">
+                <div class="top-right links" style="text-decoration: underline;">
                     @auth
                         <a href="{{ url('/home') }}">Home</a>
                     @else
@@ -76,22 +87,21 @@
                             <a href="{{ route('register') }}">Register</a>
                         @endif
                     @endauth
+
                 </div>
             @endif
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    <div><img src="{{ asset('images/logo.png') }}" alt="Yellow Traders Logo"></div>
+                    Yellow Traders App
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                <div class="links apply">
+                    <a target="_blank" href="{{ url('apply/yellow_traders') }}">Yellow Traders</a>
+                    <a target="_blank" href="{{ url('apply/junior_traders') }}">Junior Traders</a>
+                    <a target="_blank" href="{{ url('apply/corporate_traders') }}">Corporate Traders</a>
+                    <a target="_blank" href="{{ url('apply/topup_rollover') }}">Topup / Rollover</a>
                 </div>
             </div>
         </div>
