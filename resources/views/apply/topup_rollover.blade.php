@@ -4,18 +4,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}">
 
 @section('content')
-<?php
-$duration = DB::table('trader_types')->select('durations')->where('id', 1)->get();
-$dur_arr = explode(",", $duration[0]->durations);
-/*
-$request = "sodmond@outlook.com";
-$trader = App\Traders::where('trader_id', $request)
-                    ->orWhere('phone', $request)
-                    ->orWhere('email', $request)
-                    ->get();
-print_r($trader[0]->trader_id);
-*/
-?>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-9">
@@ -77,14 +65,16 @@ print_r($trader[0]->trader_id);
             </div>
 
             @isset($trader_id)
+            <?php
+            $duration = DB::table('trader_types')->select('durations')->where('id', $trader_type)->get();
+            $dur_arr = explode(",", $duration[0]->durations);
+            ?>
             <div class="card" id="investor">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <?php $getImg = Storage::url($image); echo $getImg; ?>
-                            <p><img src="/storage/app/{{$image}}" class="img-thumbnail img-fluid"></p>
-                            <p><strong>Trader ID</strong> {{ strtoupper($trader_id) }}</p>
-                            <p>{{ $trader_type }}</p>
+                            <p><img src="{{ asset('storage/'.$image)}}" class="img-thumbnail img-fluid"></p>
+                            <p><strong>Trader ID:</strong> {{ strtoupper($trader_id) }}</p>
                         </div>
                         <div class="col-md-8">
                             <p><strong>Full Name:</strong> {{ ucwords($full_name) }}</p>
@@ -111,30 +101,16 @@ print_r($trader[0]->trader_id);
                                 <p>Fill in your the below to {{ $inv_type }} your investment:</p>
                             </div>
                         </div>
-                        @if (count($errors))
-                        <div class="alert alert-danger">
-                            <strong>Whoops!</strong> There are some problems with your input.<br>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
-                        @if (isset($suc_msg))
-                            <div class="alert alert-success"><strong>Success!</strong> {{ $suc_msg }}</div>
-                        @endif
-                        @if (isset($err_msg))
-                            <div class="alert alert-warning"><strong>Error!</strong> {{ $err_msg }}</div>
-                        @endif
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="turo" value="{{ $inv_type }}">
                         <input type="hidden" name="trader_id" value="{{ $trader_id }}">
+                        <input type="hidden" name="inv_id" value="{{ $inv_id }}">
+                        <input type="hidden" name="trader_type" value="{{ $trader_type }}">
 
                         <div class="form-group row">
                             <div class="col-md">
                                 <label class="required" for="amount"><strong>Amount:</strong></label>
-                                <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" required>
+                                <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" onblur="" required>
                             </div>
                             <div class="col-md">
                                 <label class="required" for="amount_in_words"><strong>Amount in Words:</strong></label>
@@ -158,11 +134,12 @@ print_r($trader[0]->trader_id);
                                 <input type="text" class="form-control" id="purpose" name="purpose" value="{{ old('purpose') }}">
                             </div>
                         </div>
+                        <div id="loader" style="text-align:center;"><img src="{{ asset('images/loader.gif') }}" width="25"> Loading Monthly % and ROI...</div>
                         <div class="form-group row">
                             <div class="col-md">
                                 <label for="month_pcent"><strong>Monthly %:</strong></label>
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="month_pcent" name="month_pcent" readonly>
+                                    <input type="number" class="form-control" id="month_pcent" readonly>
                                     <div class="input-group-append">
                                         <span class="input-group-text">% &nbsp;&nbsp;&nbsp;</span>
                                     </div>
@@ -170,7 +147,7 @@ print_r($trader[0]->trader_id);
                             </div>
                             <div class="col-md">
                                 <label for="month_roi"><strong>Monthly ROI:</strong></label>
-                                <input type="number" class="form-control" id="month_roi" name="month_roi" readonly>
+                                <input type="number" class="form-control" id="month_roi" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -186,4 +163,6 @@ print_r($trader[0]->trader_id);
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="{{ asset('js/custom.js') }}"></script>
 @endsection

@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Yellow Traders App</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -15,7 +15,7 @@
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #222;
+                background-color: #1a2035;
                 color: #fafafa;
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
@@ -54,23 +54,27 @@
             .links > a {
                 color: #fafafa;
                 padding: 0 25px;
+                margin: 5px;
                 font-size: 13px;
                 font-weight: 600;
                 letter-spacing: .1rem;
-                text-decoration: none;
+                text-decoration: underline;
                 text-transform: uppercase;
             }
 
             .m-b-md {
                 margin-bottom: 30px;
             }
-
             .apply a{
-                background: #EEB220;
-                color: #000;
-                padding: 15px;
-                margin: 10px;
-                border-radius: 10px;
+                    background: #EEB220;
+                    color: #000;
+                    padding: 15px;
+                    margin: 10px;
+                    border-radius: 10px;
+                    text-decoration: none;
+            }
+            @media only screen and (max-width:808px){
+                .apply a{ display: block; padding: 15px 100px; }
             }
         </style>
     </head>
@@ -79,13 +83,14 @@
             @if (Route::has('login'))
                 <div class="top-right links" style="text-decoration: underline;">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/admin/dashboard') }}">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
-
+                    {{--
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}">Register</a>
                         @endif
+                        --}}
                     @endauth
 
                 </div>
@@ -93,15 +98,14 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    <div><img src="{{ asset('images/logo.png') }}" alt="Yellow Traders Logo"></div>
-                    Yellow Traders App
+                    <div><img src="{{ asset('images/logo.png') }}" class="img-fluid" alt="Yellow Traders Logo"></div>
                 </div>
 
                 <div class="links apply">
-                    <a target="_blank" href="{{ url('apply/yellow_traders') }}">Yellow Traders</a>
-                    <a target="_blank" href="{{ url('apply/junior_traders') }}">Junior Traders</a>
-                    <a target="_blank" href="{{ url('apply/corporate_traders') }}">Corporate Traders</a>
-                    <a target="_blank" href="{{ url('apply/topup_rollover') }}">Topup / Rollover</a>
+                    <a target="_blank" href="{{ url('/apply/yellow_traders') }}">Yellow Traders</a>
+                    <a target="_blank" href="{{ url('/apply/junior_traders') }}">Junior Traders</a>
+                    <a target="_blank" href="{{ url('/apply/corporate_traders') }}">Corporate Traders</a>
+                    <a target="_blank" href="{{ url('/apply/topup_rollover') }}">Topup / Rollover</a>
                 </div>
             </div>
         </div>

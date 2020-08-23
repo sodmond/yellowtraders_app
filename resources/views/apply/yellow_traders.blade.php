@@ -42,14 +42,14 @@ $dur_arr = explode(",", $duration[0]->durations);
                             <div class="col">
                                 <p><strong>Note:</strong> You have to be 18 years and above to fill this form.</p>
                                 <h4>Personal Information</h4>
-                                <p>Fill in your peronal details below just as it appears in your valid documents like National ID, Voters card, International Passport etc.</p>
+                                <p>Fill in your personal details below just as it appears in your valid documents like National ID, Voters card, International Passport etc.</p>
                             </div>
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group row">
                             <div class="col-md">
                                 <label for="fname" class="required"><strong>Full Name:</strong></label>
-                                <input type="text" class="form-control" id="fname" name="fname" placeholder="Firstname Lastname Othername" value="{{ old('fname') }}" required>
+                                <input type="text" class="form-control" id="fname" name="fname" placeholder="Surname Firstname Othername" value="{{ old('fname') }}" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -107,11 +107,11 @@ $dur_arr = explode(",", $duration[0]->durations);
                         <div class="form-group row">
                             <div class="col-md">
                                 <label for="phone" class="required"><strong>Phone:</strong></label>
-                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
+                                <input type="number" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
                             </div>
                             <div class="col">
                                 <label for="alt_phone"><strong>Other Phone:</strong></label>
-                                <input type="tel" class="form-control" id="phone" name="alt_phone" value="{{ old('alt_phone') }}">
+                                <input type="number" class="form-control" id="phone" name="alt_phone" value="{{ old('alt_phone') }}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -121,7 +121,10 @@ $dur_arr = explode(",", $duration[0]->durations);
                             </div>
                             <div class="col-md">
                                 <label class="required" for="country"><strong>Nationality:</strong></label>
-                                <input type="text" class="form-control" id="country" name="country" value="{{ old('country') }}" required>
+                                <select class="form-control" id="country" name="country">
+                                    <option value="{{ old('country') }}"> - - - {{ old('country') }} - - - </option>
+                                    <?php echo file_get_contents(asset('country_list_dropdown.txt')); ?>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -174,7 +177,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                         <div class="form-group row">
                             <div class="col-md">
                                 <label class="required" for="account_name"><strong>Account Name:</strong></label>
-                                <input type="text" class="form-control" id="acct_name" name="account_name" value="{{ old('account_name') }}" required>
+                                <input type="text" class="form-control" id="acct_name" name="account_name" value="{{ old('account_name') }}" required readonly>
                             </div>
                         </div>
                         <div class="row">
@@ -209,11 +212,12 @@ $dur_arr = explode(",", $duration[0]->durations);
                                 <input type="text" class="form-control" id="purpose" name="purpose" value="{{ old('purpose') }}">
                             </div>
                         </div>
+                        <div id="loader" style="text-align:center;"><img src="{{ asset('images/loader.gif') }}" width="25"> Loading Monthly % and ROI...</div>
                         <div class="form-group row">
                             <div class="col-md">
                                 <label for="month_pcent"><strong>Monthly %:</strong></label>
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="month_pcent" name="month_pcent" readonly>
+                                    <input type="text" class="form-control" id="month_pcent" name="month_pcent" readonly>
                                     <div class="input-group-append">
                                         <span class="input-group-text">% &nbsp;&nbsp;&nbsp;</span>
                                     </div>
@@ -221,7 +225,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             </div>
                             <div class="col-md">
                                 <label for="month_roi"><strong>Monthly ROI:</strong></label>
-                                <input type="number" class="form-control" id="month_roi" name="month_roi" readonly>
+                                <input type="text" class="form-control" id="month_roi" name="month_roi" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -230,17 +234,11 @@ $dur_arr = explode(",", $duration[0]->durations);
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    // Add the following code if you want the name of the file appear on select
-    $(".custom-file-input").on("change", function() {
-      var fileName = $(this).val().split("\\").pop();
-      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="{{ asset('js/custom.js') }}"></script>
 @endsection

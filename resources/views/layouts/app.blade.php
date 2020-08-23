@@ -21,6 +21,12 @@
 
     <!-- Favicon -->
     <link href="{{ asset('images/logo.png') }}" rel="icon" type="image/png">
+
+    <style type="text/css">
+        body{
+            background: #1a2035;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -47,17 +53,17 @@
                         $cur_url = explode("/", url()->current());
                         $last_url = explode("?", array_pop($cur_url));
                         $url_name = $last_url[0];
-                        $url_names = ['yellow_traders', 'junior_traders', 'corporate_traders', 'topup_rollover'];
+                        $url_names = ['yellow_traders', 'junior_traders', 'corporate_traders', 'topup_rollover', 'payment'];
                         ?>
                             @if (!in_array($url_name, $url_names))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
+                                </li>{{--
                                 @if (Route::has('register'))
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                     </li>
-                                @endif
+                                @endif --}}
                             @else
                                 @foreach ($url_names as $url)
                                     <li class="nav-item">
@@ -67,6 +73,9 @@
 
                             @endif
                         @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/admin/dashboard') }}">Dashboard</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
