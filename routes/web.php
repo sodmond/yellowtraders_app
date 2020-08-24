@@ -23,6 +23,7 @@ Route::get('/admin/dashboard', 'HomeController@index')->name('home');
 Route::get('/admin/payout_list', 'HomeController@payoutList')->name('payout');
 Route::post('admin/dashboard', 'HomeController@authPayout')->name('dashboard_payout');
 Route::post('admin/payout_list', 'HomeController@authPayout')->name('payout_list');
+Route::get('/admin/payout_export', 'HomeController@exportPayout')->name('payout_export');
 
 
 /* Application Forms routes starts here */

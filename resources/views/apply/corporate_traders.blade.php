@@ -123,7 +123,10 @@ $dur_arr = explode(",", $duration[0]->durations);
                         <div class="form-group row">
                             <div class="col-md">
                                 <label class="required" for="bank_name"><strong>Bank Name:</strong></label>
-                                <input type="text" class="form-control" id="bank_name" name="bank_name" value="{{ old('bank_name') }}" required>
+                                <select class="form-control" id="bank_name" name="bank_name">
+                                    <option value="{{ old('bank_name') }}"> - - - {{ old('bank_name') }} - - - </option>
+                                    <?php echo file_get_contents(asset('bank_list_dropdown.txt')); ?>
+                                </select>
                             </div>
                             <div class="col-md">
                                 <label class="required" for="account_number"><strong>Account Number:</strong></label>

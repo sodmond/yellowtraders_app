@@ -23,6 +23,9 @@
                     <div class="card-title" style="font-weight:500;"><h4>List of All Traders To Be Paid</h4></div>
                 </div>
                 <div class="card-body">
+                    <div>
+                        <a href="{{ url('/admin/payout_export') }}" target="_blank"><button class="btn">Export to CSV</button></a>
+                    </div>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>

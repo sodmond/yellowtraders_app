@@ -54,7 +54,7 @@ class PayoutListCron extends Command
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         }
-        Investments::where('end_date', '<=', DB::raw('CURDATE()'))->update(['status' => 0]);
+        Investments::where('end_date', '<', DB::raw('CURDATE()'))->update(['status' => 0]);
 
         $this->info('PayoutList Cron command executed successfully');
     }
