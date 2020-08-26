@@ -17,7 +17,9 @@ use App\Mail\SendTransaction;
 class ApplicationsController extends Controller
 {
     public function __construct() {
-        $rand = rand(1, 999999);
+        $rand1 = rand(5, 99);
+        $rand2 = rand(10, 99999);
+        $rand = ($rand1 . $rand2 . date('s'));
         $num = $rand;
         if(strlen($rand) < 6){
             $num = str_pad($rand, 6, 0, STR_PAD_LEFT);
@@ -173,7 +175,7 @@ class ApplicationsController extends Controller
             'lga' => 'required|max:255',
             'nok_name' => 'required|max:255',
             'nok_phone' => 'required|numeric',
-            'image.*' => 'required|max:255|mimes:png,jpg,jpeg',
+            'image.*' => 'required|mimes:png,jpg,jpeg|size:5000',
             'ref' => 'max:255|nullable',
         ]);
 
@@ -231,7 +233,7 @@ class ApplicationsController extends Controller
             'lga' => 'required|max:255',
             'p_name' => 'required|max:255',
             'p_phone' => 'required|numeric',
-            'image.*' => 'required|max:255|mimes:png,jpg,jpeg',
+            'image.*' => 'required|mimes:png,jpg,jpeg|max:5000',
             'ref' => 'max:255|nullable',
         ]);
 
@@ -287,7 +289,7 @@ class ApplicationsController extends Controller
             'city' => 'required|max:255',
             'rep_name' => 'required|max:255',
             'rep_phone' => 'required|numeric',
-            'image.*' => 'required|max:255|mimes:png,jpg,jpeg',
+            'image.*' => 'required|mimes:png,jpg,jpeg|max:5000',
             'ref' => 'max:255|nullable',
         ]);
 

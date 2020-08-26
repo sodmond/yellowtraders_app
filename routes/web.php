@@ -17,14 +17,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/admin/register', 'HomeController@register');
-
 Route::get('/admin/dashboard', 'HomeController@index')->name('home');
-Route::get('/admin/payout_list', 'HomeController@payoutList')->name('payout');
 Route::post('admin/dashboard', 'HomeController@authPayout')->name('dashboard_payout');
+Route::get('/admin/payout_list', 'HomeController@payoutList')->name('payout');
 Route::post('admin/payout_list', 'HomeController@authPayout')->name('payout_list');
 Route::get('/admin/payout_export', 'HomeController@exportPayout')->name('payout_export');
 
+
+Route::get('/admin/register', 'HomeController@register');
+Route::get('/admin/delete_admin/{id}', 'Auth\RegisterController@deleteAdmin');
+Route::post('/admin/delete_admin', 'Auth\RegisterController@confirmAdminDelete');
 
 /* Application Forms routes starts here */
 Route::get('/apply/yellow_traders', 'ApplicationsController@yellowTraders');
@@ -39,6 +41,10 @@ Route::get('/apply/payment', 'ApplicationsController@payment');
 Route::post('/apply/payment', 'ApplicationsController@paymentVal');
 Route::get('/apply/calRoi/{amount}', 'ApplicationsController@calRoi');
 
+/* Admin Routes */
+Route::get('/admin/all_traders', function(){
+    return view('admin.all_traders');
+})->middleware('auth');
 Route::get('/admin/yellow_traders', 'TradersController@yellow');
 Route::get('/admin/junior_traders', 'TradersController@junior');
 Route::get('/admin/corporate_traders', 'TradersController@corporate');

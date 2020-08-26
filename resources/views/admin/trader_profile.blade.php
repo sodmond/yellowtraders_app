@@ -19,7 +19,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">{{ strtoupper($trader->full_name) }}</h4>
-                    <h5 class="card-category">Trader ID: <strong>{{ $trader->trader_id}}</strong></h5>
+                    <h5 class="card-category">Trader ID: <strong>{{ strtoupper($trader->trader_id) }}</strong></h5>
                     <p class="card-description">Account type is a <strong>{{ ucwords($trader_type) }} Trader</strong></p>
                     <div>
                         <button class="btn btn-success">Update</button>
@@ -141,7 +141,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                 </div>
 
                 <div class="card-body">
-                    <h3>Active Investment</h3>
+                    <h3 class="text-success">Active Investment</h3>
                     @if ($inv->status == 2)
                     <div class="table-responsive">
                         <table class="table">
@@ -172,7 +172,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                     @else
                         <p class="text-warning" style="text-align:center; font-style:italic;">No active investment</p>
                     @endif
-                    <h3>Investment History</h3>
+                    <h3 class="text-danger">Investment History</h3>
                     <div class="table-responsive" style="max-height:500px; overflow-y:scroll;">
                         <table class="table">
                             <thead style="font-size:15px;">

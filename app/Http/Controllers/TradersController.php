@@ -51,7 +51,8 @@ class TradersController extends Controller
                     ->orWhere('email', 'like', '%'.$request->search.'%')
                     ->orWhere('phone', $request->search)
                     ->orderBy('full_name')
-                    ->limit(25);
+                    ->limit(25)
+                    ->get();
         return view('admin.search_trader', ['tradersList' => $get_trader]);
     }
 }

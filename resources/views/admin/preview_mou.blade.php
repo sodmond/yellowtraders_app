@@ -78,7 +78,7 @@ $end_date = date("jS F Y", strtotime($getTraderInfo->end_date));
 		<div id="content" style="width:100%; height:66%; padding:5px;">
             <div id="client_info" style="margin: 20px 0px 20px 0px; text-align:left;">
                 <p><span>DATE:</span> {{ date('jS F Y') }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span>OUR REF:</span>
+                    <span>TRADER ID:</span> {{ strtoupper($getTraderInfo->trader_id) }}
                 </p>
 		        <p><span>CLIENT'S NAME:</span> {{ strtoupper($getTraderInfo->full_name) }}</p>
                 <p><span>CLIENT'S ADDRESS:</span> {{ strtoupper($getTraderInfo->address) }}</p>

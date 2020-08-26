@@ -25,7 +25,7 @@
       Tip 2: you can also add an image using data-image tag
   -->
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+        <a href="{{ url('/admin/dashboard') }}" class="simple-text logo-normal">
           <img src="{{ asset('images/logo.png') }}" class="img-fluid" style="max-width:120px;">
         </a>
       </div>
@@ -47,21 +47,9 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a class="nav-link" href="{{ url('/admin/yellow_traders') }}">
+            <a class="nav-link" href="{{ url('/admin/all_traders') }}">
               <i class="material-icons">person</i>
-              <p>Yellow Traders</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="{{ url('/admin/junior_traders') }}">
-              <i class="material-icons">child_care</i>
-              <p>Junior Traders</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="{{ url('/admin/corporate_traders') }}">
-              <i class="material-icons">business</i>
-              <p>Corporate Traders</p>
+              <p>All Traders</p>
             </a>
           </li>
           <li class="nav-item ">
@@ -75,7 +63,13 @@
               <i class="fa fa-user-secret"></i>
               <p>Registered Admins</p>
             </a>
-          </li>
+          </li>{{--
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url('/') }}">
+              <i class="material-icons">business</i>
+              <p>Emailing</p>
+            </a>
+          </li>--}}
           <li class="nav-item ">
             <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
             document.getElementById('logout-form').submit();">

@@ -87,4 +87,21 @@ class RegisterController extends Controller
         return $this->registered($request, $user)
                         ?: redirect($this->redirectPath());
     }
+
+    public function deleteAdmin($id)
+    {
+        $admin = User::find($id);
+        if ($admin->role == "superuser") {
+            return redirect()->back();
+        }
+        return view('admin.delete_admin', ['admin' => $admin]);
+    }
+
+    public function confirmAdminDelete(Request $request)
+    {
+        $id = $request->id;
+        User::destroy($id);
+        #return view('admin.register', ['suc_msg' => "Admin deleted successfully"]);
+        return redirect('/admin/register');
+    }
 }
