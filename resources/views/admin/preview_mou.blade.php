@@ -1,6 +1,5 @@
 <?php
-#$amountWords = App\Traders::numberTowords($getTraderInfo->amount);
-#$amountWords = new \NumberFormatter("en", \NumberFormatter::SPELLOUT);
+$amountWords = new \NumberFormatter("en", \NumberFormatter::SPELLOUT);
 #echo print_r(get_loaded_extensions());
 $start_date = date("jS F Y", strtotime($getTraderInfo->start_date));
 $end_date = date("jS F Y", strtotime($getTraderInfo->end_date));
@@ -86,11 +85,11 @@ $end_date = date("jS F Y", strtotime($getTraderInfo->end_date));
             <p>Sir / Ma</p>
             <h4 style="text-align: center;">AGREEMENT LETTER</h4>
             <p>You have invested the sum of <strong>#<?php echo number_format($getTraderInfo->amount) ?>
-                 {{-- $amountWords->format($getTraderInfo->amount) --}}</strong> from this
-                date {{ $start_date }} to {{ $end_date }}, a {{$getTraderInfo->duration}} months period with
-                {{$getTraderInfo->monthly_pcent}}% monthly ROI.</p>
-            <p>Please note that you can only withdraw you capital after {{$getTraderInfo->duration}} months contract,
-                withdrawal before the expiration date is not allowed.</p>
+                 ({{ ucwords($amountWords->format($getTraderInfo->amount)) }} Naira Only)</strong> from this
+                date {{ $start_date }} to {{ $end_date }}, a {{$amountWords->format($getTraderInfo->duration)}}
+                months period with as {{$getTraderInfo->monthly_pcent}}% monthly ROI.</p>
+            <p>Please note that you can only withdraw you capital after {{$amountWords->format($getTraderInfo->duration)}}
+                months contract, withdrawal before the expiration date is not allowed.</p>
             <p>This letter serves as a formal agreement between <strong>Yellow Traders</strong> and its investor
                 in any case of trade which doesn't favour us, there will be a capital refund to client.</p>
             <p>Thank you.</p>

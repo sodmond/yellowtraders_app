@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Investments;
+use App\Payouts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -40,22 +41,22 @@ class PayoutListCron extends Command
      */
     public function handle()
     {
-        Log::info("PayoutList Cron is working fine!");
+        Log::info("PayoutList Cron started!");
 
         $tradersToPay = Investments::select('id', 'monthly_roi')
-                    ->where(DB::raw('CURDATE()'), '<=', 'end_date')
-                    ->where(DB::raw('DAY(CURDATE())'), '=', DB::raw('DAY(start_date)'))
+                    ->whereRaw('CURDATE() <= end_date')
+                    ->whereRaw('DAY(CURDATE()) = DAY(start_date)')
                     ->where('status', '=', 2)
                     ->get();
         foreach ($tradersToPay as $payout){
-            DB::table('payouts')->insert([
+            $row = [
                 'investment_id' => $payout->id,
                 'roi' => $payout->monthly_roi,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
+                #'created_at' => date('Y-m-d H:i:s')
+            ];
+            Payouts::create($row);
         }
-        Investments::where('end_date', '<', DB::raw('CURDATE()'))->update(['status' => 0]);
-
-        $this->info('PayoutList Cron command executed successfully');
+        #$this->info('PayoutList Cron command executed successfully');
+        Log::info("PayoutList Cron command executed successfully");
     }
 }

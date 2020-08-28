@@ -26,9 +26,17 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('expiredInv:cron')
+                    #->everyMinute()
+                    ->dailyAt('01:30')
+                    ->timezone('Africa/Lagos');
+
         $schedule->command('payoutlist:cron')
-                    ->daily();
-                    #->everyMinute();
+                    #->everyMinute()
+                    ->dailyAt('02:30')
+                    ->timezone('Africa/Lagos');
+
     }
 
     /**

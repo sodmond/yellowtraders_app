@@ -42,7 +42,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             <div class="col">
                                 <p><strong>Note:</strong> You have to be 18 years and above to fill this form.</p>
                                 <h4>Personal Information</h4>
-                                <p>Fill in your personal details below just as it appears in your valid documents like National ID, Voters card, International Passport etc.</p>
+                                <p>Fill in your personal details below just as it appears in your Bank Account details.</p>
                             </div>
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

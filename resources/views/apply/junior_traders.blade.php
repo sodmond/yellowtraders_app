@@ -42,7 +42,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             <div class="col">
                                 <p><strong>Note:</strong> This form is only for Children between age group 0-17years.</p>
                                 <h4>Personal Information</h4>
-                                <p>Fill in your personal details below just as it appears in your valid documents like Birth Certificate, National ID, International Passport etc.</p>
+                                <p>Fill in your personal details below just as it appears in your Bank Account details.</p>
                             </div>
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

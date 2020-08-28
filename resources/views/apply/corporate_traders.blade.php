@@ -42,7 +42,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             <div class="col">
                                 <p><strong>Note:</strong> This form is only for registered companies/business.</p>
                                 <h4>Company Information</h4>
-                                <p>Fill in your company details below just as it appears in your valid business certificate.</p>
+                                <p>Fill in your company details below just as it appears in your valid business certificate, your company name should be the same as your bank account name.</p>
                             </div>
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
