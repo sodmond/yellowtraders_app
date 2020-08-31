@@ -7,7 +7,7 @@ use App\Mail\SendReceivedConfirmation;
 use App\Traders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -60,7 +60,8 @@ class PaymentController extends Controller
         $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+'.$dur.' months'));
         $invConvert = json_decode(json_encode($inv), true);
-        $email = Traders::select('email')->where('trader_id', $inv->trader_id);
+        $getEmail = Traders::select('email')->where('trader_id', $inv->trader_id)->first();
+        $email = $getEmail->email;
         if($authType == "confirm" && $inv_type != "topup"){
             DB::beginTransaction();
             DB::table('received_payments')->where('id', $payId)->update(['status' => 2, 'admin' => auth()->user()->username, 'updated_at' => date('Y-m-d H:i:s')]);
@@ -73,6 +74,8 @@ class PaymentController extends Controller
         if ($authType == "confirm" && $inv_type == "topup") {
             $old_amount = Investments::where('id', $getInv->investment_id)->first('amount');
             $new_amount = $old_amount->amount + $getInv->amount;
+            $numToWord = new \NumberFormatter("en", \NumberFormatter::SPELLOUT);
+            $amountwords = $numToWord->format($new_amount);
             $monthly_pcent = DB::table('monthly_rois')->select('per_cent')->where([
                 ['min', '<=', $new_amount],
                 ['max', '>=', $new_amount],
@@ -83,6 +86,7 @@ class PaymentController extends Controller
             DB::table('investment_logs')->where('id', $logId)->update(['status' => 2, 'updated_at' => date('Y-m-d H:i:s')]);
             $topupInv = [
                 'amount' => $new_amount,
+                'amount_in_words' => $amountwords,
                 'monthly_roi' => $monthly_roi,
                 'monthly_pcent' => $monthly_pcent->per_cent,
                 'status' => 2,

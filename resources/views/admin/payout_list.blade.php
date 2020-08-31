@@ -24,7 +24,7 @@
                 </div>
                 <div class="card-body">
                     <div>
-                        <a href="{{ url('/admin/payout_export') }}" target="_blank"><button class="btn">Export to CSV</button></a>
+                        <a href="{{ url('/admin/payout_export') }}"><button class="btn">Export to CSV</button></a>
                     </div>
                     <div class="table-responsive">
                         <table class="table">

@@ -1,12 +1,9 @@
 @extends('layouts.emails-temp')
 
 @section('content')
-<style type="text/css">
-    p{ text-align: justify; }
-</style>
 <div style="margin: 50px 10px;">
     <p>Hello,</p>
-    <p>Your {{ $inv_type }} investment of the amount of {{ $amount }} has been confirmed. See details below:</p>
+    <p>Your {{ $inv_type }} investment of the amount of {{ $investment['amount'] }} has been confirmed. See details below:</p>
     <table>
         <tbody>
             <tr>
@@ -15,7 +12,7 @@
             </tr>
             @if ($inv_type == "topup")
             <tr>
-                <td style="text-align:right;"><strong>Invested Amount:</strong></td>
+                <td style="text-align:right;"><strong>Total Invested Amount:</strong></td>
                 <td style="text-align:left;">{{ $newInv["amount"] }}</td>
             </tr>
             <tr>
@@ -50,8 +47,10 @@
             </tr>
         </tbody>
     </table>
-    <p>Than you for investing with us.</p>
-    <p>Best regards, <br>Yellow Traders.</p>
+    <div style="text-align: justify;">
+        <p>Than you for investing with us.</p>
+        <p>Best regards, <br>Yellow Traders.</p>
+    </div>
 </div>
 <?php
 #print_r(get_loaded_extensions());

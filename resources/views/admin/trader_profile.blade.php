@@ -22,8 +22,14 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                     <h5 class="card-category">Trader ID: <strong>{{ strtoupper($trader->trader_id) }}</strong></h5>
                     <p class="card-description">Account type is a <strong>{{ ucwords($trader_type) }} Trader</strong></p>
                     <div>
-                        <button class="btn btn-success">Update</button>
-                        <button class="btn btn-danger">Delete</button>
+                        @if(auth()->user()->role == 'superuser')
+                        <a href="{{ url('/admin/edit_trader/'.$trader->id) }}" target="_blank">
+                            <button class="btn btn-success">Edit</button>
+                        </a>
+                        <a href="{{ url('/admin/delete_trader/'.$trader->id) }}">
+                            <button class="btn btn-danger">Delete</button>
+                        </a>
+                        @endif
                         <a href="{{ url('/admin/preview_mou/'.$inv->id) }}" target="_blank"><button class="btn btn-primary">Preview MOU</button></a>
                     </div>
                 </div>
@@ -112,7 +118,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 </tr>
                                 <tr>
                                     <td><strong>Phone</strong></td>
-                                    <td>{{ $trader->phone }}</td>
+                                    <td>0{{ $trader->phone }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Other Phone</strong></td>

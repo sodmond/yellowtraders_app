@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AllTradersExport;
 use Illuminate\Http\Request;
 use App\Traders;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TradersController extends Controller
 {
@@ -54,5 +56,13 @@ class TradersController extends Controller
                     ->limit(25)
                     ->get();
         return view('admin.search_trader', ['tradersList' => $get_trader]);
+    }
+
+    public function exportTraders($id)
+    {
+        $getTraderType = DB::table('trader_types')->where('id', $id)->select('name')->first();
+        $traderType = $getTraderType->name;
+        $filename = $traderType.'-traders-'.date('Y-m-d').'.xlsx';
+        return Excel::download(new AllTradersExport($id), $filename);
     }
 }

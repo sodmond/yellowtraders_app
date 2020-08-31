@@ -32,7 +32,7 @@
               <div class="card-icon">
                 <i class="material-icons">notifications</i>
               </div>
-              <p class="card-category">Today / Total</p>
+              <p class="card-category">Pending / Total</p>
               <h3 class="card-title"><?php echo $payments_today.'/'.$payments_total; ?></h3>
             </div>
             <div class="card-footer">
@@ -66,7 +66,7 @@
               <div class="card-icon">
                 <i class="material-icons">today</i>
               </div>
-              <p class="card-category">Active / Total</p>
+              <p class="card-category">Pending / Total</p>
               <h3 class="card-title"><?php echo $payouts_unconfirmed.'/'.$payouts_total ?></h3>
             </div>
             <div class="card-footer">

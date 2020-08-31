@@ -44,19 +44,19 @@ class PayoutListCron extends Command
         Log::info("PayoutList Cron started!");
 
         $tradersToPay = Investments::select('id', 'monthly_roi')
-                    ->whereRaw('CURDATE() <= end_date')
-                    ->whereRaw('DAY(CURDATE()) = DAY(start_date)')
-                    ->where('status', '=', 2)
+                    ->whereRaw('end_date >= CURDATE()')
+                    ->whereRaw('DATE_ADD(start_date, INTERVAL pay_count+1 MONTH) = CURDATE()')
+                    ->where('status', 2)
                     ->get();
         foreach ($tradersToPay as $payout){
             $row = [
                 'investment_id' => $payout->id,
                 'roi' => $payout->monthly_roi,
-                #'created_at' => date('Y-m-d H:i:s')
             ];
             Payouts::create($row);
+            Investments::where('id', $payout->id)->increment('pay_count', 1);
         }
         #$this->info('PayoutList Cron command executed successfully');
-        Log::info("PayoutList Cron command executed successfully");
+        Log::info("PayoutList Cron command migrated ".$tradersToPay->count()." records successfully");
     }
 }

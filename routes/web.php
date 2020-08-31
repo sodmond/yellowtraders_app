@@ -52,10 +52,15 @@ Route::get('/admin/search_trader', function(){
     return view('admin.search_trader');
 });
 Route::post('/admin/search_trader', 'TradersController@search');
+Route::get('/admin/traders_export/{id}', 'TradersController@exportTraders')->name('traders_export');
 
 Route::get('/admin/trader_profile', 'TraderProfileController@index');
 Route::get('/admin/trader_profile/{id}', 'TraderProfileController@show');
 Route::get('/admin/preview_mou/{id}', 'TraderProfileController@getMou');
+Route::get('/admin/edit_trader/{id}', 'TraderProfileController@editTrader');
+Route::post('/admin/edit_trader', 'TraderProfileController@updateTrader');
+Route::get('/admin/delete_trader/{id}', 'TraderProfileController@deleteTrader');
+Route::post('/admin/delete_trader', 'TraderProfileController@confirmTraderdelete');
 
 Route::get('/admin/payments', 'PaymentController@recieved_payments');
 Route::get('/admin/payments/{id}', 'PaymentController@viewPayment');
@@ -67,7 +72,7 @@ Route::get('/emails/transaction', function (){
     return view('emails.transaction', ['amount'=>800, 'trader_id'=>'inv_8484834', 'trans_id'=>6363, 'inv_type'=>'new']);
 });
 Route::get('/emails/payout', function (){
-    return view('emails.payout', ['amount'=>800000, 'monthly_roi'=>160000]);
+    return view('emails.received_payments', ['amount'=>800000, 'monthly_roi'=>160000]);
 });
 
 /* Clear Cache

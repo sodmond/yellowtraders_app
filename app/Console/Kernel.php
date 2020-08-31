@@ -29,12 +29,12 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('expiredInv:cron')
                     #->everyMinute()
-                    ->dailyAt('01:30')
+                    ->dailyAt('03:00')
                     ->timezone('Africa/Lagos');
 
         $schedule->command('payoutlist:cron')
                     #->everyMinute()
-                    ->dailyAt('02:30')
+                    ->dailyAt('04:00')
                     ->timezone('Africa/Lagos');
 
     }

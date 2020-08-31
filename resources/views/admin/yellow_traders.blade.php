@@ -39,6 +39,14 @@
                 </div>
 
                 <div class="card-body">
+                    <div>
+                        <a href="{{ url('/admin/traders_export/1') }}"><button class="btn btn-secondary">Export List</button></a>
+                    </div>
+                    @isset($_GET['msg'])
+                        @if ($_GET['msg'] == "traderdelsuc")
+                            <div class="alert alert-success">Trader has been deleted successfully</div>
+                        @endif
+                    @endisset
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="text-primary">

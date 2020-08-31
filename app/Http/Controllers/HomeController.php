@@ -44,7 +44,7 @@ class HomeController extends Controller
                     ->get();
         $all_investors = Traders::count();
         $payments_total = DB::table('received_payments')->count();
-        $payments_today = DB::table('received_payments')->where(DB::raw('date(created_at)'), DB::raw('CURDATE()'))->count();
+        $payments_today = DB::table('received_payments')->where('status', 1)->count();
         $investment_total = Investments::count();
         $investment_active = Investments::where('status', 2)->count();
         $payouts_total = DB::table('payouts')->count();
