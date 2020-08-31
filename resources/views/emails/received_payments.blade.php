@@ -39,11 +39,11 @@
             @endif
             <tr>
                 <td style="text-align:right;"><strong>Start Date:</strong></td>
-                <td style="text-align:left;">{{ date("jS F Y", strtotime($investment["start_date"])) }}</td>
+                <td style="text-align:left;">{{ $investment["start_date"] }}</td>
             </tr>
             <tr>
                 <td style="text-align:right;"><strong>End Date:</strong></td>
-                <td style="text-align:left;">{{ date("jS F Y", strtotime($investment["end_date"])) }}</td>
+                <td style="text-align:left;">{{ $investment["end_date"] }}</td>
             </tr>
         </tbody>
     </table>

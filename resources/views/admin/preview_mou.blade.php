@@ -62,10 +62,10 @@ $end_date = date("jS F Y", strtotime($getTraderInfo->end_date));
                         <p style="line-height:1.5em; font-weight:500;">
                             17, Iyalla Street, Beside Shoprite,
                             <br>Alausa ikeja, Lagos.
-                            <br>yellowtrade01@gmail.com
+                            <br>yellowtrade018@gmail.com
                             <br>yellowcare@yellowtraders.org
-                            <br>07027487313, 07064555084,
-                            <br>08080340064
+                            <br>+2349044777007, +2349044777077,
+                            <br>+2349044777017, +2349044777117
                         </p>
 					</td>
                     <td style="width:40%; text-align:right;">

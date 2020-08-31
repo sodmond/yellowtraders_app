@@ -64,7 +64,7 @@
                 <p>No. 17 Iyalla Street, off Kafi Street, beside Shoprite. Ikeja, Lagos, Nigeria</p>
                 <p><strong>Email:</strong> <a href="mailto:yellowcare@yellowtraders.org">yellowcare@yellowtraders.org</a> |
                 <a href="mailto:info@yellowtraders.org">info@yellowtraders.org</a></p>
-                <p><strong>Phone:</strong> 07027487313, 07064555084, 08080340064</p>
+                <p><strong>Phone:</strong> +2349044777007, +2349044777077, +2349044777017, +2349044777117</p>
             </div>
         </div>
     </body>
