@@ -55,7 +55,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 </tr>
                                 <tr>
                                     <td><strong>Account Number</strong></td>
-                                    <td>{{ $bank->account_number }}</td>
+                                    <td>{{ str_pad($bank->account_number, 10, 0, STR_PAD_LEFT) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,7 +130,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 </tr>
                                 <tr>
                                     <td><strong>{NOK / Parent / Rep} Phone</strong></td>
-                                    <td>{{ $trader->contact_phone }}</td>
+                                    <td>0{{ $trader->contact_phone }}</td>
                                 </tr>
                             </tbody>
                         </table>

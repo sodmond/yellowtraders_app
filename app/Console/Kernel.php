@@ -34,8 +34,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('payoutlist:cron')
                     #->everyMinute()
-                    ->dailyAt('04:00')
-                    ->timezone('Africa/Lagos');
+                    ->hourly()
+                    ->timezone('Africa/Lagos')
+                    ->between('03:00', '09:00');
 
     }
 
