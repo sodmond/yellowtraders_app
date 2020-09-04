@@ -101,13 +101,14 @@
                                 <button class="btn btn-danger" onclick="javascript:void(0)">Payment Rejected</button>
                             @endif
                         </div>
-                        <div class="col-md" style="text-align:right">
+                        <div class="col-md" style="text-align:right;">
                             @if ($payment->status == 1)
-                            <form method="POST" action="{{ url('/admin/payments') }}">
+                            <form class="form-inline" method="POST" action="{{ url('/admin/payments') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="payId" value="{{$payment->id}}">
                                 <input type="hidden" name="logId" value="{{$payment->investment_log_id}}">
                                 <input type="hidden" name="inv_type" value="{{$payment->investment_type}}">
+                                <input type="date" class="form-control" name="start_date" id="start_date" required>
                                 <input type="hidden" name="authType" value="confirm">
                                 <button type="submit" class="btn btn-success">Confirm</button>
                             </form>

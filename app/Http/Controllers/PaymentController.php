@@ -57,8 +57,10 @@ class PaymentController extends Controller
         $invId = $getInv->investment_id;
         $inv = Investments::where('id', $invId)->first();
         $dur = $inv->duration;
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+'.$dur.' months'));
+        $start = $request->start_date;
+        $newDate = date_create($start);
+        date_add($newDate, date_interval_create_from_date_string("$dur months"));
+        $end = date_format($newDate,"Y-m-d");
         $invConvert = json_decode(json_encode($inv), true);
         $getEmail = Traders::select('email')->where('trader_id', $inv->trader_id)->first();
         $email = $getEmail->email;
