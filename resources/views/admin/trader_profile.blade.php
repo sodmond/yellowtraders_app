@@ -132,6 +132,10 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                     <td><strong>{NOK / Parent / Rep} Phone</strong></td>
                                     <td>0{{ $trader->contact_phone }}</td>
                                 </tr>
+                                <tr>
+                                    <td><strong>Referral</strong></td>
+                                    <td>{{ $trader->referral }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
