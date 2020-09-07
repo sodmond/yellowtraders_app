@@ -83,6 +83,7 @@
                                     <option value="{{ old('role') }}"> - - - {{ old('role') }} - - - </option>
                                     <option value="superuser">Superuser</option>
                                     <option value="agent">Agent</option>
+                                    <option value="cs-agent">CS Agent</option>
                                 </select>
                                 @error('role')
                                     <span class="invalid-feedback" role="alert">

@@ -21,6 +21,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                     <h4 class="card-title">{{ strtoupper($trader->full_name) }}</h4>
                     <h5 class="card-category">Trader ID: <strong>{{ strtoupper($trader->trader_id) }}</strong></h5>
                     <p class="card-description">Account type is a <strong>{{ ucwords($trader_type) }} Trader</strong></p>
+                    @if(auth()->user()->role != 'cs-agent')
                     <div>
                         @if(auth()->user()->role == 'superuser')
                         <a href="{{ url('/admin/edit_trader/'.$trader->id) }}" target="_blank">
@@ -32,6 +33,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                         @endif
                         <a href="{{ url('/admin/preview_mou/'.$inv->id) }}" target="_blank"><button class="btn btn-primary">Preview MOU</button></a>
                     </div>
+                    @endif
                 </div>
             </div>
 

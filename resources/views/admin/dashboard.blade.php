@@ -117,11 +117,13 @@
                                     <td>{{ $payout->end_date }}</td>
                                     <td>
                                         @if($payout->status == 0)
-                                        <form method="POST" action="{{ url('/admin/dashboard') }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            <input type="hidden" name="payout_id" value="{{ $payout->id }}">
-                                            <button type="submit" class="btn btn-info" style="padding:7px;">Confirm</button>
-                                        </form>
+                                            @if(auth()->user()->role != 'cs-agent')
+                                                <form method="POST" action="{{ url('/admin/dashboard') }}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <input type="hidden" name="payout_id" value="{{ $payout->id }}">
+                                                    <button type="submit" class="btn btn-info" style="padding:7px;">Confirm</button>
+                                                </form>
+                                            @endif
                                         @else
                                         <button type="submit" class="btn btn-success" style="padding:7px;" onclick="javascript:void(0)">Paid</button>
                                         @endif

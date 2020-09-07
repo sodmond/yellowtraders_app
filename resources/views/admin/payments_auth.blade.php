@@ -82,7 +82,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md">
-                            @if ($payment->status == 1)
+                            @if ($payment->status == 1 && auth()->user()->role != 'cs-agent')
                             <form method="POST" action="{{ url('/admin/payments') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="payId" value="{{$payment->id}}">
@@ -102,7 +102,7 @@
                             @endif
                         </div>
                         <div class="col-md" style="text-align:right;">
-                            @if ($payment->status == 1)
+                            @if ($payment->status == 1 && auth()->user()->role != 'cs-agent')
                             <form class="form-inline" method="POST" action="{{ url('/admin/payments') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="payId" value="{{$payment->id}}">
