@@ -12,6 +12,9 @@
         padding: 10px;
     }
 </style>
+<?php
+$getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
+?>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -43,7 +46,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Trader ID</strong></td>
-                                    <td>{{ strtoupper($payment->trader_id) }}</td>
+                                    <td><a href="{{ url('/admin/trader_profile/'.$getTrader->id) }}" style="color:#E2A921; text-decoration:underline;">
+                                        {{ strtoupper($payment->trader_id) }}
+                                    </a></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Full Name</strong></td>

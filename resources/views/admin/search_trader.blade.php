@@ -63,8 +63,7 @@
                             </tbody>
                             @endisset
                         </table>
-
-                        @if($tradersList->count() == 0)
+                        @if( (isset($tradersList) && $tradersList->count() == 0) || !isset($tradersList))
                         <p class="text-warning" style="text-align:center; font-style:italic;">No record found</p>
                         @endif
                     </div>

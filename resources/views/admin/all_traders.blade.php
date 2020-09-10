@@ -22,6 +22,22 @@
             <div class="card">
                 <div class="card-header card-header-primary" style="background:#E2A921;">
                     <div class="card-title row" style="color:#000;">
+                        <div class="col-md-4" style="font-size:128px; color:#eee;"><i class="fa fa-search"></i></div>
+                        <div class="col-md-8" style="font-size:24px; text-align:left; line-height:100px; padding:10px;">
+                            <a href="{{ url('/admin/search_trader') }}">Search Traders</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body"></div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+
+            <div class="card">
+                <div class="card-header card-header-primary" style="background:#E2A921;">
+                    <div class="card-title row" style="color:#000;">
                         <div class="col-md-4" style="font-size:128px; color:#eee;"><i class="fa fa-user"></i></div>
                         <div class="col-md-8" style="font-size:24px; text-align:left; line-height:100px; padding:10px;">
                             <a href="{{ url('/admin/yellow_traders') }}">Yellow Traders</a>
@@ -32,7 +48,9 @@
                 <div class="card-body"></div>
             </div>
         </div>
+    </div>
 
+    <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card">
                 <div class="card-header card-header-primary" style="background:#E2A921;">
@@ -47,9 +65,7 @@
                 <div class="card-body"></div>
             </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center">
         <div class="col-md-5">
 
             <div class="card">
