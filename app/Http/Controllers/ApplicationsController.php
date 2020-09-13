@@ -175,7 +175,7 @@ class ApplicationsController extends Controller
             'lga' => 'required|max:255',
             'nok_name' => 'required|max:255',
             'nok_phone' => 'required|numeric',
-            'image.*' => 'required|mimes:png,jpg,jpeg|size:5000',
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
             'ref' => 'max:255|nullable',
         ]);
 
@@ -233,7 +233,7 @@ class ApplicationsController extends Controller
             'lga' => 'required|max:255',
             'p_name' => 'required|max:255',
             'p_phone' => 'required|numeric',
-            'image.*' => 'required|mimes:png,jpg,jpeg|max:5000',
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
             'ref' => 'max:255|nullable',
         ]);
 
@@ -289,7 +289,7 @@ class ApplicationsController extends Controller
             'city' => 'required|max:255',
             'rep_name' => 'required|max:255',
             'rep_phone' => 'required|numeric',
-            'image.*' => 'required|mimes:png,jpg,jpeg|max:5000',
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
             'ref' => 'max:255|nullable',
         ]);
 
@@ -462,7 +462,7 @@ class ApplicationsController extends Controller
         $this->validate($request, [
             'trans_num' => 'required|min:15|max:32|starts_with:trans#',
             'trader_num' => 'required|max:32|starts_with:inv_',
-            'proof.*' => 'required|max:191|mimes:png,jpg,jpeg'
+            'proof' => 'required|mimes:png,jpg,jpeg|max:2048'
         ]);
         $getLog = explode("#", $request->trans_num);
         $logId = ltrim($getLog[1], "0");
