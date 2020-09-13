@@ -73,7 +73,7 @@ Route::get('/emails/transaction', function (){
 });
 Route::get('/emails/payout', function (){
     return view('emails.received_payments', ['amount'=>800000, 'monthly_roi'=>160000]);
-});
+});*/
 
 /* Clear Cache
 Route::get('/clear-cache', function() {
