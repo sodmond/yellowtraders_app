@@ -62,6 +62,7 @@ class PaymentController extends Controller
         date_add($newDate, date_interval_create_from_date_string("$dur months"));
         $end = date_format($newDate,"Y-m-d");
         $invConvert = json_decode(json_encode($inv), true);
+        $invRange = ["start_date" => $start, "end_date" => $end];
         $getEmail = Traders::select('email')->where('trader_id', $inv->trader_id)->first();
         $email = $getEmail->email;
         if($authType == "confirm" && $inv_type != "topup"){
@@ -70,7 +71,7 @@ class PaymentController extends Controller
             DB::table('investment_logs')->where('id', $logId)->update(['status' => 2, 'updated_at' => date('Y-m-d H:i:s')]);
             Investments::where('id', $invId)->update(['start_date'=>$start, 'end_date'=>$end, 'status'=>2, 'updated_at' => date('Y-m-d H:i:s')]);
             DB::commit();
-            Mail::to($email)->send(new SendReceivedConfirmation($invConvert, 'new'));
+            Mail::to($email)->send(new SendReceivedConfirmation(array_merge($invConvert, $invRange), 'new'));
             return redirect('/admin/payments/'.$payId.'?msg=success');
         }
         if ($authType == "confirm" && $inv_type == "topup") {
@@ -96,7 +97,7 @@ class PaymentController extends Controller
             ];
             Investments::where('id', $invId)->update($topupInv);
             DB::commit();
-            Mail::to($email)->send(new SendReceivedConfirmation($invConvert, 'topup', $topupInv));
+            Mail::to($email)->send(new SendReceivedConfirmation(array_merge($invConvert, $invRange), 'topup', $topupInv));
             return redirect('/admin/payments/'.$payId.'?msg=success');
         }
         if ($authType == "reject" && $inv_type != "topup") {
