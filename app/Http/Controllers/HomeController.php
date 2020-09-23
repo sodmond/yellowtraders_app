@@ -72,7 +72,7 @@ class HomeController extends Controller
                             'traders.full_name', 'bank_accounts.bank_name',
                             DB::raw('LPAD(bank_accounts.account_number, 10, 0) AS account_number'))
                     ->orderBy('payouts.id')
-                    ->paginate(15);
+                    ->paginate(10);
         return view('admin.payout_list', ['tradersToPay' => $tradersToPay]);
     }
 
@@ -103,4 +103,20 @@ class HomeController extends Controller
         $users =  User::all();
         return view('admin.register', ['users' => $users]);
     }
+
+    public function payoutConfirmed()
+    {
+        $tradersToPay = Investments::join('payouts', 'payouts.investment_id', '=', 'investments.id')
+                    ->join('traders', 'investments.trader_id', '=', 'traders.trader_id')
+                    ->join('bank_accounts', 'traders.trader_id', '=', 'bank_accounts.trader_id')
+                    ->where('payouts.status', 1)
+                    ->select('payouts.*', 'investments.amount', 'investments.monthly_pcent',
+                            'investments.duration', 'investments.start_date', 'investments.end_date', 'traders.trader_id',
+                            'traders.full_name', 'bank_accounts.bank_name',
+                            DB::raw('LPAD(bank_accounts.account_number, 10, 0) AS account_number'))
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
+        return view('admin.payout_confirmed', ['tradersToPay' => $tradersToPay]);
+    }
+
 }

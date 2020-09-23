@@ -1,9 +1,9 @@
 @extends('layouts.dark-theme')
 
-<title>Unconfirmed Received Payments</title>
+<title>All Received Payments</title>
 
 @section('page-header')
-    <h3>Unconfirmed Received Payments</h3>
+    <h3>All Received Payments</h3>
 @endsection
 
 @section('content')
@@ -13,16 +13,16 @@
     }
 </style>
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-warning" style="background:#E2A921;">
-                    <div class="card-title" style="font-weight:500;"><h4>List of Unconfirmed Payments</h4></div>
+                    <div class="card-title" style="font-weight:500;"><h4>List of All Received Payments</h4></div>
                 </div>
 
                 <div class="card-body">
                     <div>
-                        <a href="{{ url('/admin/all_payments') }}"><button class="btn">All Received Payments</button></a>
+                        <a href="{{ url('/admin/payments') }}"><button class="btn">Unconfirmed Payments</button></a>
                     </div>
                     <div class="table-responsive">
                         <table class="table">
@@ -34,10 +34,11 @@
                                     <th>Amount</th>
                                     <th>Date</th>
                                     <th>Action</th>
+                                    <th>Admin</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size:14px; font-weight:100;">
-                                @foreach($r_pay as $pay)
+                                @foreach($all_pay as $pay)
                                 <tr>
                                     <td>{{ $pay->investment_log_id }}</td>
                                     <td>{{ strtoupper($pay->trader_id) }}</td>
@@ -47,16 +48,13 @@
                                     <td>
                                         <a href="{{ url('/admin/payments/'.$pay->id) }}"><button class="btn btn-info" style="padding:7px;">View</button></a>
                                     </td>
+                                    <td>{{ $pay->admin }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <div class="row justify-content-center">{{ $r_pay->links() }}</div>
-                    <?php
-                    #$user = auth()->user()->username;
-                    #print_r($r_pay);
-                    ?>
+                    <div class="row justify-content-center">{{ $all_pay->links() }}</div>
                 </div>
             </div>
         </div>

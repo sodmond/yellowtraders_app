@@ -15,6 +15,16 @@ class PaymentController extends Controller
         $this->middleware('auth');
     }
 
+    public function all_payments()
+    {
+        $all_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'received_payments.admin', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->paginate(10);
+        return view('admin.all_payments', ['all_pay' => $all_pay]);
+    }
+
     public function recieved_payments()
     {
         $r_pay = DB::table('received_payments')
@@ -23,13 +33,7 @@ class PaymentController extends Controller
                 ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
                 ->where('received_payments.status', 1)
                 ->paginate(15);
-
-        $all_pay = DB::table('received_payments')
-                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
-                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
-                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'received_payments.admin', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
-                ->paginate(10);
-        return view('admin.payments', ['r_pay' => $r_pay, 'all_pay' => $all_pay]);
+        return view('admin.payments', ['r_pay' => $r_pay]);
     }
 
     public function viewPayment($id)

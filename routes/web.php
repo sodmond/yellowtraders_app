@@ -22,7 +22,7 @@ Route::post('admin/dashboard', 'HomeController@authPayout')->name('dashboard_pay
 Route::get('/admin/payout_list', 'HomeController@payoutList')->name('payout');
 Route::post('admin/payout_list', 'HomeController@authPayout')->name('payout_list');
 Route::get('/admin/payout_export', 'HomeController@exportPayout')->name('payout_export');
-
+Route::get('/admin/payout_confirmed', 'HomeController@payoutConfirmed');
 
 Route::get('/admin/register', 'HomeController@register');
 Route::get('/admin/delete_admin/{id}', 'Auth\RegisterController@deleteAdmin');
@@ -62,6 +62,7 @@ Route::post('/admin/edit_trader', 'TraderProfileController@updateTrader');
 Route::get('/admin/delete_trader/{id}', 'TraderProfileController@deleteTrader');
 Route::post('/admin/delete_trader', 'TraderProfileController@confirmTraderdelete');
 
+Route::get('/admin/all_payments', 'PaymentController@all_payments');
 Route::get('/admin/payments', 'PaymentController@recieved_payments');
 Route::get('/admin/payments/{id}', 'PaymentController@viewPayment');
 Route::post('/admin/payments', 'PaymentController@authPayment');

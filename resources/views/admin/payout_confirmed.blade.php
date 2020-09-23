@@ -1,9 +1,9 @@
 @extends('layouts.dark-theme')
 
-<title>Payout List</title>
+<title>Confirmed Payout List</title>
 
 @section('page-header')
-    <h3>Payout List</h3>
+    <h3>Confirmed Payout List</h3>
 @endsection
 
 @section('content')
@@ -20,13 +20,11 @@
         <div class="col-md">
             <div class="card">
                 <div class="card-header card-header-warning" style="background:#E2A921;">
-                    <div class="card-title" style="font-weight:500;"><h4>List of All Traders To Be Paid</h4></div>
+                    <div class="card-title" style="font-weight:500;"><h4>List of All Confirmed Payouts</h4></div>
                 </div>
                 <div class="card-body">
                     <div>
-                        <a href="{{ url('/admin/payout_export') }}"><button class="btn">Export to CSV</button></a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="{{ url('/admin/payout_confirmed') }}"><button class="btn btn-success">Confirmed Payouts</button></a>
+                        <a href="{{ url('/admin/payout_list') }}"><button class="btn btn-info">Unconfirmed Payouts</button></a>
                     </div>
                     <div class="table-responsive">
                         <table class="table">
@@ -43,6 +41,8 @@
                                     <th>Start Date</th>
                                     <th>End Date</th>
                                     <th>Action</th>
+                                    <th>Admin</th>
+                                    <th>Paid Date</th>
                                 </tr>
                             </thead>
                             <tbody style="font-size: 14px;">
@@ -72,6 +72,8 @@
                                         <button type="submit" class="btn btn-success" style="padding:7px;" onclick="javascript:void(0)">Paid</button>
                                         @endif
                                     </td>
+                                    <td>{{ $payout->admin }}</td>
+                                    <td>{{ $payout->updated_at }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
