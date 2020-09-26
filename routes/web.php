@@ -66,6 +66,7 @@ Route::get('/admin/all_payments', 'PaymentController@all_payments');
 Route::get('/admin/payments', 'PaymentController@recieved_payments');
 Route::get('/admin/payments/{id}', 'PaymentController@viewPayment');
 Route::post('/admin/payments', 'PaymentController@authPayment');
+Route::post('/admin/searchpayments', 'PaymentController@searchPayment')->name('searchPayment');
 
 
 /* Preview email template views

@@ -116,7 +116,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong></td>
-                                    <td>{{ strtolower($trader->email) }}</td>
+                                    <td><a href="mailto:{{ strtolower($trader->email) }}" style="color:#E2A921; text-decoration:underline;">{{ strtolower($trader->email) }}</a></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Phone</strong></td>

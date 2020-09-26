@@ -359,24 +359,33 @@ class ApplicationsController extends Controller
                         ->orWhere('email', $request->tidpne)
                         ->get();
             if (count($trader) > 0) {
-                $last_date = strtotime($trader[0]->updated_at);
+                $getInv = Investments::select('id', 'status', DB::raw('DATEDIFF(CURRENT_DATE, start_date) AS daynum'))
+                            ->where('trader_id', $trader[0]->trader_id)
+                            ->first();
+                /*$last_date = strtotime($trader[0]->updated_at);
                 $cur_date = strtotime(date('Y-m-d H:i:s'));
                 $date_diff = abs($cur_date - $last_date);
                 $years = floor($date_diff / (365*60*60*24));
                 $months = floor(($date_diff - $years * 365*60*60*24) / (30*60*60*24));
                 $days = floor(($date_diff - $years * 365*60*60*24 -  $months*30*60*60*24)/ (60*60*24));
                 $inv = Investments::where('trader_id', $trader[0]->trader_id)->get();
-                $status = $inv[0]->status;
+                $status = $inv[0]->status;*/
+                $days = $getInv->daynum;
+                $status = $getInv->status;
                 $inv_type = "rollover";
                 if ($status == 1){
                     $pend_msg = "You have a pending investment, check back later.";
+                    return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
+                }
+                if ($status == 2 && $days > 10){
+                    $pend_msg = "You can neither topup nor rollover at this moment.";
                     return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
                 }
                 if ($status == 2 && $days <= 10){
                     $inv_type = "topup";
                 }
                 $trader_arr = json_decode(json_encode($trader[0]), true);
-                return view('apply.topup_rollover', array_merge($trader_arr, ['inv_id' => $inv[0]->id,'inv_type' => $inv_type]));
+                return view('apply.topup_rollover', array_merge($trader_arr, ['inv_id' => $getInv->id,'inv_type' => $inv_type]));
             }
             $err_msg = "You need to register with us before you can Topup or Rollover";
             return view('apply.topup_rollover', ['err_msg' => $err_msg]);

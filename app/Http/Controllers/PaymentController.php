@@ -123,4 +123,18 @@ class PaymentController extends Controller
         }
         return redirect('/admin/payments');
     }
+
+    public function searchPayment(Request $request)
+    {
+        $searchValue = $request->searchPayValue;
+        $r_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->where('investments.trader_id', $searchValue)
+                ->get();
+        return response()->json([
+            'r_pay' => $r_pay
+        ]);
+    }
 }
