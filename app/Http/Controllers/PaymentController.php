@@ -132,6 +132,7 @@ class PaymentController extends Controller
                 ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
                 ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
                 ->where('investments.trader_id', $searchValue)
+                ->orderBy('received_payments.created_at', 'desc')
                 ->get();
         return response()->json([
             'r_pay' => $r_pay
