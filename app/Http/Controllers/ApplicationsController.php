@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendApplication;
 use App\Mail\SendTransaction;
+use App\Payouts;
 
 class ApplicationsController extends Controller
 {
@@ -90,7 +91,7 @@ class ApplicationsController extends Controller
         $bank = [
             'trader_id' => $this->trader_id,
             'bank_name' => $request->bank_name,
-            'holder_name' => $request->account_name,
+            'holder_name' => $data['full_name'],
             'account_number' => $request->account_number,
             'created_at' => date('Y-m-d H:i:s'),
         ];
@@ -121,15 +122,20 @@ class ApplicationsController extends Controller
         DB::beginTransaction();
         $new_bank = DB::table('bank_accounts')->insert($bank);
         $new_inv = Investments::create($investment);
-        array_pop($investment);
+        /*array_pop($investment);
         array_shift($investment);
-        array_pop($investment);
-        $investment1 = array_merge_recursive([
+        array_pop($investment);*/
+        $investment1 = [
             'investment_id' => $new_inv->id,
             'investment_type' => $inv_type,
-            ], $investment,
-            ['created_at' => date('Y-m-d H:i:s')
-        ]);
+            'amount' => $request->amount,
+            'amount_in_words' => $request->amount_words,
+            'monthly_roi' => $monthly_roi,
+            'monthly_pcent' => $monthly_pcent,
+            'duration' => $request->duration,
+            'purpose' => $request->purpose,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
         $inv_log = DB::table('investment_logs')->insertGetId($investment1);
         $trader = Traders::create($data);
         if ($new_bank && $new_inv && $inv_log && $trader) {
@@ -139,6 +145,10 @@ class ApplicationsController extends Controller
             return true;
         }
         DB::rollBack();
+        DB::table('bank_accounts')->where('trader_id', $this->trader_id)->delete();
+        Investments::where('trader_id', $this->trader_id)->delete();
+        DB::table('investment_logs')->where('investment_id', $new_inv->id);
+        Traders::where('trader_id', $this->trader_id)->delete();
         return false;
     }
 
@@ -278,12 +288,13 @@ class ApplicationsController extends Controller
             'address' => 'required|max:255',
             'phone' => 'required|numeric|unique:traders,phone',
             'alt_phone' => 'nullable',
-            'dob' => ['required', 'max:255', 'date',
+            'dob' => 'required|date',
+            /*'dob' => ['required', 'max:255', 'date',
             function ($attribute, $value, $fail){
                 if ($this->valDOB($value) == 'Error'){
                     $fail("You can't use a date of incorporation in the future");
                 }
-            }],
+            }],*/
             'country' => 'required|max:255',
             'state' => 'required|max:255',
             'city' => 'required|max:255',
@@ -359,29 +370,33 @@ class ApplicationsController extends Controller
                         ->orWhere('email', $request->tidpne)
                         ->get();
             if (count($trader) > 0) {
-                $getInv = Investments::select('id', 'status', DB::raw('DATEDIFF(CURRENT_DATE, start_date) AS daynum'))
+                $getInv = Investments::select('id', 'status', 'duration')
                             ->where('trader_id', $trader[0]->trader_id)
                             ->first();
-                /*$last_date = strtotime($trader[0]->updated_at);
-                $cur_date = strtotime(date('Y-m-d H:i:s'));
-                $date_diff = abs($cur_date - $last_date);
-                $years = floor($date_diff / (365*60*60*24));
-                $months = floor(($date_diff - $years * 365*60*60*24) / (30*60*60*24));
-                $days = floor(($date_diff - $years * 365*60*60*24 -  $months*30*60*60*24)/ (60*60*24));
-                $inv = Investments::where('trader_id', $trader[0]->trader_id)->get();
-                $status = $inv[0]->status;*/
-                $days = $getInv->daynum;
                 $status = $getInv->status;
                 $inv_type = "rollover";
                 if ($status == 1){
                     $pend_msg = "You have a pending investment, check back later.";
                     return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
                 }
-                if ($status == 2 && $days > 10){
-                    $pend_msg = "You can neither topup nor rollover at this moment.";
-                    return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
-                }
-                if ($status == 2 && $days <= 10){
+                if ($status == 2){
+                    $topupDays = [];
+                    for ($i=1; $i<$getInv->duration ; $i++) {
+                        $topupInv = Investments::selectRaw('DATEDIFF(CURRENT_DATE, DATE_ADD(start_date, INTERVAL '.$i.' MONTH)) AS daynum')
+                                    ->where('id', $getInv->id)
+                                    ->first();
+                        $days = $topupInv->daynum;
+                        if ($days < 1 || $days > 10){
+                            $topupDays[] = 0;
+                        }
+                        if ($days > 0 && $days <= 10){
+                            $topupDays[] = 1;
+                        }
+                    }
+                    if ( !(in_array(1, $topupDays)) ) {
+                        $pend_msg = "You can neither topup nor rollover at this moment. ". $topupInv->daynum;
+                        return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
+                    }
                     $inv_type = "topup";
                 }
                 $trader_arr = json_decode(json_encode($trader[0]), true);
@@ -436,13 +451,13 @@ class ApplicationsController extends Controller
                 'amount_in_words' => 'required|max:255',
                 'purpose' => 'nullable|max:255',
             ]);
-            $old_amount = Investments::where('trader_id', $request->trader_id)->get('amount');
-            $new_amount = $old_amount[0]->amount + $request->amount;
+            //$old_amount = Investments::where('trader_id', $request->trader_id)->get('amount');
+            //$new_amount = $old_amount[0]->amount + $request->amount;
             $monthly_pcent = DB::table('monthly_rois')->select('per_cent')->where([
-                ['min', '<=', $new_amount],
-                ['max', '>=', $new_amount],
+                ['min', '<=', $request->amount],
+                ['max', '>=', $request->amount],
             ])->get();
-            $monthly_roi = ($new_amount * $monthly_pcent[0]->per_cent) / 100;
+            $monthly_roi = ($request->amount * $monthly_pcent[0]->per_cent) / 100;
             $data = [
                 'amount' => $request->amount,
                 'amount_in_words' => $request->amount_in_words,
@@ -450,11 +465,8 @@ class ApplicationsController extends Controller
                 'monthly_pcent' => $monthly_pcent[0]->per_cent,
                 'purpose' => $request->purpose,
                 'status' => '1',
-                #'updated_at' => date('Y-m-d H:i:s'),
             ];
             $logId = $this->logInv($data, $request->inv_id, $request->turo);
-            #array_shift($data);
-            #Investments::where('trader_id', $request->trader_id)->increment('amount', $request->amount, $data);
             $email = Traders::select('email')->where('trader_id', $request->trader_id)->first();
             Mail::to($email->email)->send(new SendTransaction($request->trader_id, $request->amount, $logId, "top up"));
             return view('apply.payment', ['suc_msg' => 'Your top up request has been sent']);

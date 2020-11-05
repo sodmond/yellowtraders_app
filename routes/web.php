@@ -18,11 +18,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/admin/dashboard', 'HomeController@index')->name('home');
+Route::get('/admin/report_analysis', 'HomeController@reportAnalysis')->name('report');
+Route::get('/admin/report_analysis/{newDate}', 'HomeController@reportAnalysis')->name('weekReport');
+Route::get('/admin/report_month/{filterMonth}/{filterYear}', 'HomeController@mReportAnalysis')->name('monthReport');
 Route::post('admin/dashboard', 'HomeController@authPayout')->name('dashboard_payout');
 Route::get('/admin/payout_list', 'HomeController@payoutList')->name('payout');
 Route::post('admin/payout_list', 'HomeController@authPayout')->name('payout_list');
 Route::get('/admin/payout_export', 'HomeController@exportPayout')->name('payout_export');
 Route::get('/admin/payout_confirmed', 'HomeController@payoutConfirmed');
+Route::post('/admin/search_payouts', 'HomeController@searchPayoutConfirmed');
 
 Route::get('/admin/register', 'HomeController@register');
 Route::get('/admin/delete_admin/{id}', 'Auth\RegisterController@deleteAdmin');

@@ -196,6 +196,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 <th>Duration</th>
                                 <th>Purpose</th>
                                 <th>Created Date</th>
+                                <th>Transaction ID</th>
                             </thead>
                             <tbody style="font-size:14px;">
                                 @foreach($invLog as $log)
@@ -208,6 +209,9 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                     <td>{{ $log->duration }}</td>
                                     <td>{{ $log->purpose }}</td>
                                     <td>{{ $log->created_at }}</td>
+                                    <td>
+                                        <input type="text" id="{{ 'log_id'.$log->id }}" class="form-control" value="{{ 'trans#'.str_pad($log->id, 9, 0, STR_PAD_LEFT) }}" style="width:100px; color:#666;" readonly onfocus="clone(this.value)">
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -219,4 +223,16 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script>
+    function clone(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(element).select();
+        document.execCommand("copy");
+        $(this).attr('title', "Copied");
+        alert("Copied " + element);
+        $temp.remove();
+    }
+</script>
 @endsection
