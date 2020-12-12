@@ -16,6 +16,11 @@ class TradersController extends Controller
         $this->middleware('auth');
     }
 
+    public function allTraders()
+    {
+        return view('admin.all_traders');
+    }
+
     private function getTraders($traderType)
     {
         $get_trader = Traders::select('id', 'trader_id', 'full_name', 'email')
@@ -41,6 +46,11 @@ class TradersController extends Controller
     {
         $tradersList = $this->getTraders(3);
         return view('admin.corporate_traders', ['tradersList' => $tradersList]);
+    }
+
+    public function searchTraders()
+    {
+        return view('admin.search_trader');
     }
 
     public function search(Request $request)

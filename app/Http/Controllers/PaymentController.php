@@ -89,8 +89,8 @@ class PaymentController extends Controller
             ])->first();
             $monthly_roi = ($new_amount * $monthly_pcent->per_cent) / 100;
             DB::beginTransaction();
-            DB::table('received_payments')->where('investment_log_id', $logId)->update(['status' => 2, 'admin' => auth()->user()->username, 'updated_at' => date('Y-m-d H:i:s')]);
-            DB::table('investment_logs')->where('id', $logId)->update(['status' => 2, 'updated_at' => date('Y-m-d H:i:s')]);
+            $updtPay = DB::table('received_payments')->where('investment_log_id', $logId)->update(['status' => 2, 'admin' => auth()->user()->username, 'updated_at' => date('Y-m-d H:i:s')]);
+            $updtLog = DB::table('investment_logs')->where('id', $logId)->update(['status' => 2, 'updated_at' => date('Y-m-d H:i:s')]);
             $topupInv = [
                 'amount' => $new_amount,
                 'amount_in_words' => $amountwords,
@@ -99,10 +99,14 @@ class PaymentController extends Controller
                 'status' => 2,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
-            Investments::where('id', $invId)->update($topupInv);
-            DB::commit();
-            Mail::to($email)->send(new SendReceivedConfirmation(array_merge($invConvert, $invRange), 'topup', $topupInv));
-            return redirect('/admin/payments/'.$payId.'?msg=success');
+            $updtInv = Investments::where('id', $invId)->update($topupInv);
+            if ($updtPay && $updtLog && $updtInv){
+                DB::commit();
+                Mail::to($email)->send(new SendReceivedConfirmation(array_merge($invConvert, $invRange), 'topup', $topupInv));
+                return redirect('/admin/payments/'.$payId.'?msg=success');
+            }
+            DB::rollBack();
+            return redirect()->back();
         }
         if ($authType == "reject" && $inv_type != "topup") {
             DB::beginTransaction();

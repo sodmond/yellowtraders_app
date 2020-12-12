@@ -81,7 +81,7 @@
                                     <th>Log ID</th>
                                     <th>Trader ID</th>
                                     <th>Type</th>
-                                    <th>Amount</th>
+                                    <th>Amount (&#8358;)</th>
                                     <th>Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -92,7 +92,7 @@
                                     <td>{{ $pay->investment_log_id }}</td>
                                     <td>{{ strtoupper($pay->trader_id) }}</td>
                                     <td>{{ $pay->investment_type }}</td>
-                                    <td>{{ $pay->amount }}</td>
+                                    <td>{{ number_format($pay->amount) }}</td>
                                     <td>{{ $pay->created_at }}</td>
                                     <td>
                                         <a href="{{ url('/admin/payments/'.$pay->id) }}"><button class="btn btn-info" style="padding:7px;">View</button></a>

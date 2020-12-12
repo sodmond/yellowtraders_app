@@ -14,6 +14,7 @@ $(document).ready(function() {
                 if ($.isEmptyObject(data.error)){
                     $('#month_pcent').val(data.monthly_pcent);
                     $('#month_roi').val(data.monthly_roi);
+                    $('#amount_words').val(data.amountwords);
                 }else{
                     $('amount_error').html(data.error);
                 }
@@ -25,7 +26,7 @@ $(document).ready(function() {
     }
     calRoi();
 
-    $('#amount').focusout(function(){
+    $('#amount').keyup(function(){
         //if($('#month_roi').val() === ""){
             $('#loader').css('display', 'block');
         //}
@@ -34,14 +35,21 @@ $(document).ready(function() {
         //if($('#month_roi').val() != ""){
             $('#loader').css('display', 'none');
         //}
+        $('#tSubBtn').removeAttr("disabled");
     });
 
-    $('#fname').keyup(function(){
+    $('#fname').focusout(function(){
         var name = $('#fname').val();
         $('#acct_name').val(name);
-    })
+        nameArr = name.split(' ');
+        if( typeof nameArr[1] === 'undefined' || nameArr[1] == "" ){
+            alert("Pls enter full name as it appears on your bank account");
+            $('#fname').val("");
+            $('#acct_name').val("");
+        }
+    });
     $('#cname').keyup(function(){
         var name = $('#cname').val();
         $('#acct_name').val(name);
-    })
+    });
 });

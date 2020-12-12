@@ -68,7 +68,7 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
                                 </tr>
                                 <tr>
                                     <td><strong>Amount</strong></td>
-                                    <td>{{ $payment->amount }}</td>
+                                    <td>&#8358;{{ number_format($payment->amount) }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Date</strong></td>
@@ -115,7 +115,8 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
                                 <input type="hidden" name="inv_type" value="{{$payment->investment_type}}">
                                 <input type="date" class="form-control" name="start_date" id="start_date" required>
                                 <input type="hidden" name="authType" value="confirm">
-                                <button type="submit" class="btn btn-success">Confirm</button>
+                                <button type="submit" id="tSubBtn" class="btn btn-success">Confirm</button>
+                                <span id="daates" class="text-warning"></span>
                             </form>
                             @endif
                         </div>
@@ -126,4 +127,30 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
     </div>
 
 </div>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script>
+    $(document).ready(function() {
+        var today = new Date();
+        $('#tSubBtn').prop("disabled", true);
+        $('#start_date').change(function(){
+            var nDate = $('#start_date').val();
+            var sDate = new Date(nDate);
+            var timeDiff = today.getTime() - sDate.getTime();
+            var daysDiff = timeDiff / (1000 * 3600 * 24);
+            var numDays = Math.round(daysDiff);
+            if (numDays < 21 && numDays >= 0) {
+                $('#tSubBtn').prop("disabled", false);
+                $('#daates').html("");
+            }
+            if (numDays > 21) {
+                $('#tSubBtn').prop("disabled", true);
+                $('#daates').html("<strong>Warning!</strong> You can't backdate more than 3 weeks");
+            }
+            if (numDays < 0) {
+                $('#tSubBtn').prop("disabled", true);
+                $('#daates').html("<strong>Warning!</strong> You can't select a date in the future");
+            }
+        });
+    });
+</script>
 @endsection

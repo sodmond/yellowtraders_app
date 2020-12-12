@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ApplicationsController@welcomePage');
 
 Auth::routes();
 
@@ -46,15 +44,11 @@ Route::post('/apply/payment', 'ApplicationsController@paymentVal');
 Route::get('/apply/calRoi/{amount}', 'ApplicationsController@calRoi');
 
 /* Admin Routes */
-Route::get('/admin/all_traders', function(){
-    return view('admin.all_traders');
-})->middleware('auth');
+Route::get('/admin/all_traders', 'TradersController@allTraders');
 Route::get('/admin/yellow_traders', 'TradersController@yellow');
 Route::get('/admin/junior_traders', 'TradersController@junior');
 Route::get('/admin/corporate_traders', 'TradersController@corporate');
-Route::get('/admin/search_trader', function(){
-    return view('admin.search_trader');
-});
+Route::get('/admin/search_trader', 'TradersController@searchTraders');
 Route::post('/admin/search_trader', 'TradersController@search');
 Route::get('/admin/traders_export/{id}', 'TradersController@exportTraders')->name('traders_export');
 
@@ -81,9 +75,6 @@ Route::get('/emails/payout', function (){
     return view('emails.received_payments', ['amount'=>800000, 'monthly_roi'=>160000]);
 });*/
 
-/* Clear Cache
-Route::get('/clear-cache', function() {
-    Artisan::call('cache:clear');
-    dd("Cache is cleared");
-});
-*/
+
+Route::get('/optimize-app', 'ApplicationsController@optimizeApp');
+

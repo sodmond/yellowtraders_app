@@ -189,9 +189,9 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                         <table class="table">
                             <thead style="font-size:15px;">
                                 <th>Type</th>
-                                <th>Amount</th>
+                                <th>Amount (&#8358;)</th>
                                 <th>Amount in Words</th>
-                                <th>Monthly ROI</th>
+                                <th>Monthly ROI (&#8358;)</th>
                                 <th>Monthly %</th>
                                 <th>Duration</th>
                                 <th>Purpose</th>
@@ -202,9 +202,9 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 @foreach($invLog as $log)
                                 <tr>
                                     <td>{{ $log->investment_type }}</td>
-                                    <td>{{ $log->amount }}</td>
+                                    <td>{{ number_format($log->amount) }}</td>
                                     <td>{{ $log->amount_in_words }}</td>
-                                    <td>{{ $log->monthly_roi }}</td>
+                                    <td>{{ number_format($log->monthly_roi) }}</td>
                                     <td>{{ $log->monthly_pcent }}</td>
                                     <td>{{ $log->duration }}</td>
                                     <td>{{ $log->purpose }}</td>

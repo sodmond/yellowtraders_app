@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendApplication;
 use App\Mail\SendTransaction;
 use App\Payouts;
+use Illuminate\Support\Facades\Artisan;
 
 class ApplicationsController extends Controller
 {
@@ -29,6 +30,11 @@ class ApplicationsController extends Controller
         $this->trader_id = $trader_id;
     }
 
+    public function welcomePage()
+    {
+        return view('welcome');
+    }
+
     public function calRoi($amount)
     {
         if($amount > 30000000){
@@ -42,7 +48,13 @@ class ApplicationsController extends Controller
         $get_roi = ($amount * $ck_pcent) / 100;
         $monthly_pcent = $ck_pcent;
         $monthly_roi = $get_roi;
-        return response()->json(['monthly_pcent'=>$monthly_pcent, 'monthly_roi'=>$monthly_roi]);
+        $numToWord = new \NumberFormatter("en", \NumberFormatter::SPELLOUT);
+        $amountwords = $numToWord->format($amount);
+        return response()->json([
+            'monthly_pcent' =>  $monthly_pcent,
+            'monthly_roi'   =>  $monthly_roi,
+            'amountwords'  =>  $amountwords
+        ]);
     }
     private function valDOB($date)
     {
@@ -192,13 +204,14 @@ class ApplicationsController extends Controller
         $trader_type = "1";
         $inv_type = "new";
         $image = $this->storeImage($request->file('image'));
+        $address = $request->address.", ".$request->bustop.", ".$request->city;
         $data = [
             'trader_id' => $this->trader_id,
             'trader_type' => $trader_type,
             'full_name' => $request->fname,
             'marital_status' => $request->marital,
             'gender' => $request->gender,
-            'address' => $request->address,
+            'address' => $address,
             'phone' => $request->phone,
             'other_phone' => $request->alt_phone,
             'dob' => $request->dob,
@@ -250,13 +263,14 @@ class ApplicationsController extends Controller
         $trader_type = "2";
         $inv_type = "new";
         $image = $this->storeImage($request->file('image'));
+        $address = $request->address.", ".$request->bustop.", ".$request->city;
         $data = [
             'trader_id' => $this->trader_id,
             'trader_type' => $trader_type,
             'full_name' => $request->fname,
             'marital_status' => $request->marital,
             'gender' => $request->gender,
-            'address' => $request->address,
+            'address' => $address,
             'phone' => $request->phone,
             'dob' => $request->dob,
             'nationality' => $request->country,
@@ -307,19 +321,20 @@ class ApplicationsController extends Controller
         $trader_type = "3";
         $inv_type = "new";
         $image = $this->storeImage($request->file('image'));
+        $address = $request->address.", ".$request->bustop.", ".$request->city;
         $data = [
             'trader_id' => $this->trader_id,
             'trader_type' => $trader_type,
             'full_name' => $request->cname,
             'marital_status' => 'Not applicable',
             'gender' => 'Not applicable',
-            'address' => $request->address,
+            'address' => $address,
             'phone' => $request->phone,
             'other_phone' => $request->alt_phone,
             'dob' => $request->dob,
             'nationality' => $request->country,
             'state' => $request->state,
-            'lga' => $request->city,
+            'lga' => $request->lga,
             'email' => $request->email,
             'image' => $image,
             'contact_name' => $request->rep_name,
@@ -394,7 +409,7 @@ class ApplicationsController extends Controller
                         }
                     }
                     if ( !(in_array(1, $topupDays)) ) {
-                        $pend_msg = "You can neither topup nor rollover at this moment. ". $topupInv->daynum;
+                        $pend_msg = "You can neither topup nor rollover at this moment. ";
                         return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
                     }
                     $inv_type = "topup";
@@ -414,7 +429,7 @@ class ApplicationsController extends Controller
                         $fail($msg);
                     }
                 }],
-                'amount_in_words' => 'required|max:255',
+                'amount_words' => 'required|max:255',
                 'duration' => 'required|numeric',
                 'purpose' => 'nullable|max:255',
             ]);
@@ -425,7 +440,7 @@ class ApplicationsController extends Controller
             $monthly_roi = ($request->amount * $monthly_pcent[0]->per_cent) / 100;
             $data = [
                 'amount' => $request->amount,
-                'amount_in_words' => $request->amount_in_words,
+                'amount_in_words' => $request->amount_words,
                 'monthly_roi' => $monthly_roi,
                 'monthly_pcent' => $monthly_pcent[0]->per_cent,
                 'duration' => $request->duration,
@@ -448,7 +463,7 @@ class ApplicationsController extends Controller
                         $fail($msg);
                     }
                 }],
-                'amount_in_words' => 'required|max:255',
+                'amount_words' => 'required|max:255',
                 'purpose' => 'nullable|max:255',
             ]);
             //$old_amount = Investments::where('trader_id', $request->trader_id)->get('amount');
@@ -460,7 +475,7 @@ class ApplicationsController extends Controller
             $monthly_roi = ($request->amount * $monthly_pcent[0]->per_cent) / 100;
             $data = [
                 'amount' => $request->amount,
-                'amount_in_words' => $request->amount_in_words,
+                'amount_in_words' => $request->amount_words,
                 'monthly_roi' => $monthly_roi,
                 'monthly_pcent' => $monthly_pcent[0]->per_cent,
                 'purpose' => $request->purpose,
@@ -502,6 +517,13 @@ class ApplicationsController extends Controller
             return view('apply.payment', ['suc_msg' => 'Payment Proof has been submitted']);
         }
         return view('apply.payment', ['err_msg' => 'Invalid credentials or Expired transaction ID']);
+    }
+
+    // Optimize Application
+    public function optimizeApp()
+    {
+        Artisan::call('optimize');
+        dd("Application is now optimized");
     }
 
 }

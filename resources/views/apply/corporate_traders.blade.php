@@ -60,6 +60,16 @@ $dur_arr = explode(",", $duration[0]->durations);
                         </div>
                         <div class="form-group row">
                             <div class="col-md">
+                                <label for="address" class="required"><strong>Nearest bustop:</strong></label>
+                                <input type="text" class="form-control" id="bustop" name="bustop" value="{{ old('bustop') }}" required>
+                            </div>
+                            <div class="col-md">
+                                <label for="address" class="required"><strong>City:</strong></label>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ old('city') }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md">
                                 <label class="required" for="email"><strong>Email Address:</strong></label>
                                 <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                             </div>
@@ -93,8 +103,8 @@ $dur_arr = explode(",", $duration[0]->durations);
                                 <input type="text" class="form-control" id="state" name="state" value="{{ old('state') }}" required>
                             </div>
                             <div class="col-md">
-                                <label class="required" for="city"><strong>City:</strong></label>
-                                <input type="text" class="form-control" id="city" name="city" value="{{ old('city') }}" required>
+                                <label class="required" for="city"><strong>LGA:</strong></label>
+                                <input type="text" class="form-control" id="lga" name="lga" value="{{ old('lga') }}" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -153,7 +163,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             </div>
                             <div class="col-md">
                                 <label class="required" for="amount_words"><strong>Amount in Words:</strong></label>
-                                <input type="text" class="form-control" id="amount_words" name="amount_words" value="{{ old('amount_words') }}" required>
+                                <input type="text" class="form-control" id="amount_words" name="amount_words" value="{{ old('amount_words') }}" required readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -189,7 +199,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                         </div>
                         <div class="form-group row">
                             <div class="col" style="text-align:center;">
-                                <input type="submit" class="btn btn-warning" value="Submit">
+                                <input type="submit" class="btn btn-warning" id="tSubBtn" value="Submit" disabled>
                             </div>
                         </div>
                     </form>

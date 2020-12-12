@@ -114,7 +114,7 @@
                             </div>
                             <div class="col-md">
                                 <label class="required" for="amount_in_words"><strong>Amount in Words:</strong></label>
-                                <input type="text" class="form-control" id="amount_in_words" name="amount_in_words" value="{{ old('amount_words') }}" required>
+                                <input type="text" class="form-control" id="amount_words" name="amount_words" value="{{ old('amount_words') }}" required readonly>
                             </div>
                         </div>
                         <div class="form-group row">

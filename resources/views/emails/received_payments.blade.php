@@ -3,7 +3,13 @@
 @section('content')
 <div style="margin: 50px 10px;">
     <p>Hello,</p>
-    <p>Your {{ $inv_type }} investment of the amount of {{ $investment['amount'] }} has been confirmed. See details below:</p>
+    <p>Your {{ $inv_type }} investment of the amount of
+    @if ($inv_type == "topup")
+        {{ ($newInv["amount"] - $investment['amount']) }}
+    @else
+        {{ $investment['amount'] }}
+    @endif
+    has been confirmed. See details below:</p>
     <table>
         <tbody>
             <tr>

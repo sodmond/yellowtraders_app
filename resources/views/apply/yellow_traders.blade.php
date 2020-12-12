@@ -106,6 +106,16 @@ $dur_arr = explode(",", $duration[0]->durations);
                         </div>
                         <div class="form-group row">
                             <div class="col-md">
+                                <label for="address" class="required"><strong>Nearest bustop:</strong></label>
+                                <input type="text" class="form-control" id="bustop" name="bustop" value="{{ old('bustop') }}" required>
+                            </div>
+                            <div class="col-md">
+                                <label for="address" class="required"><strong>City:</strong></label>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ old('city') }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md">
                                 <label for="phone" class="required"><strong>Phone:</strong></label>
                                 <input type="number" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
                             </div>
@@ -197,7 +207,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                             </div>
                             <div class="col-md">
                                 <label class="required" for="amount_words"><strong>Amount in Words:</strong></label>
-                                <input type="text" class="form-control" id="amount_words" name="amount_words" value="{{ old('amount_words') }}" required>
+                                <input type="text" class="form-control" id="amount_words" name="amount_words" value="{{ old('amount_words') }}" required readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -233,7 +243,7 @@ $dur_arr = explode(",", $duration[0]->durations);
                         </div>
                         <div class="form-group row">
                             <div class="col" style="text-align:center;">
-                                <input type="submit" class="btn btn-warning" value="Submit">
+                                <input type="submit" class="btn btn-warning" id="tSubBtn" value="Submit" disabled>
                             </div>
                         </div>
                     </form>
