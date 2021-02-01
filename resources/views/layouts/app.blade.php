@@ -53,7 +53,7 @@
                         $cur_url = explode("/", url()->current());
                         $last_url = explode("?", array_pop($cur_url));
                         $url_name = $last_url[0];
-                        $url_names = ['yellow_traders', 'junior_traders', 'corporate_traders', 'topup_rollover', 'payment'];
+                        $url_names = ['yellow_traders', 'junior_traders', 'corporate_traders', 'topup_rollover', 'payment', 'withdraw_capital'];
                         ?>
                             @if (!in_array($url_name, $url_names))
                                 <li class="nav-item">

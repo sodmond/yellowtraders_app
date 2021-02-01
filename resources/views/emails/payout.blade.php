@@ -6,6 +6,7 @@
     <p>Your monthly ROI have just been paid to the bank account which you provided for investment.</p>
     <p>The amount of <strong>#{{ $monthly_roi }}</strong> has been paid as your monthly ROI
         for your <strong>#{{ $amount }}</strong> investment.</p>
+    <p>You now have 10 days after today to fill a Topup form if your investment haven't reach exipration date</p>
     <p>We hope you enjoy your investment with us. Please contact us if you have any payment issue.</p>
     <p>Regards,<br>Yellow Traders</p>
 </div>

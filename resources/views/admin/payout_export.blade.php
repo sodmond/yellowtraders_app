@@ -8,12 +8,14 @@
 <body>
     Hello
     <?php
-$header = [
+        $header = [
             'Customername',
+            'Phone',
             'Amount Invested',
             'Monthly ROI',
             'Monthly %',
             'Bankname',
+            'Bank Sort Code',
             'Account Number',
             'Duration'
         ];
@@ -24,12 +26,12 @@ $header = [
         fputcsv($output, $header);
         foreach ($tradersToPay as $payout) {
             $row = [
-                $payout->full_name, $payout->amount, $payout->monthly->roi, $payout->monthly_pcent,
-                $payout->bankname, $payout->account_number, $payout->duration
+                $payout->full_name, $payout->phone, $payout->amount, $payout->monthly->roi, $payout->monthly_pcent,
+                $payout->bankname, $payout->bank_sort_code, $payout->account_number, $payout->duration
             ];
             fputcsv($output, $row);
         }
-echo "Hello";
+        echo "Hello";
 ?>
 
 </body>

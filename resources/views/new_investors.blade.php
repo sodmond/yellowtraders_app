@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Yellow Traders App</title>
+        <title>New Investors | Yellow Traders App</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -102,8 +102,9 @@
                 </div>
 
                 <div class="links apply">
-                    <a href="{{ url('/new_investors') }}">New Investors</a>
-                    <a href="{{ url('/returning_investors') }}">Returning Investors</a>
+                    <a href="{{ url('/apply/yellow_traders') }}">Yellow Traders</a>
+                    <a href="{{ url('/apply/junior_traders') }}">Junior Traders</a>
+                    <a href="{{ url('/apply/corporate_traders') }}">Corporate Traders</a>
                 </div>
             </div>
         </div>

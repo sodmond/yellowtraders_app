@@ -24,7 +24,7 @@
                     <form class="navbar-form" method="POST" action="{{ url('/admin/search_trader') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="input-group no-border">
-                          <input type="text" name="search" class="form-control" required placeholder="Search for trader with trader id or email or phone...">
+                          <input type="text" name="search" class="form-control" required placeholder="Search for trader with trader id or email or phone or trader's name...">
                           <button type="submit" class="btn btn-default btn-round btn-just-icon">
                             <i class="material-icons">search</i>
                             <div class="ripple-container"></div>

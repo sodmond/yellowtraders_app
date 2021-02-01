@@ -1,12 +1,25 @@
 @extends('layouts.dark-theme')
 
-<title>Unconfirmed Received Payments</title>
+<title>Filtered Unconfirmed Received Payments</title>
 
 @section('page-header')
-    <h3>Unconfirmed Received Payments</h3>
+    <h3>Filtered Unconfirmed Received Payments</h3>
 @endsection
 
 @section('content')
+<?php
+$inv_type = $_GET['typ'];
+$fr_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->where([
+                    ['received_payments.status', 1],
+                    ['investment_logs.investment_type', $inv_type],
+                ])
+                ->take(25)
+                ->get();
+?>
 <style type="text/css">
     .btn{
         padding: 10px;
@@ -67,15 +80,12 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-warning" style="background:#E2A921;">
-                    <div class="card-title" style="font-weight:500;"><h4>List of Unconfirmed Payments</h4></div>
+                    <div class="card-title" style="font-weight:500;"><h4>List of Unconfirmed <em>{{$inv_type}}</em> Payments</h4></div>
                 </div>
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <a href="{{ url('/admin/all_payments') }}"><button class="btn">All Received Payments</button></a>
-                        </div>
-                        <div class="col-md-9">
+                        <div class="col-md">
                             <span style="font-size:16px; font-weight:100;">Filter by Investments:</span>
                             <span>
                                 <a href="{{ url('/admin/payments_filter?typ=new') }}"><button class="btn btn-primary" style="padding:5px;">New</button></a>
@@ -97,7 +107,7 @@
                                 </tr>
                             </thead>
                             <tbody style="font-size:14px; font-weight:100;">
-                                @foreach($r_pay as $pay)
+                                @foreach($fr_pay as $pay)
                                 <tr>
                                     <td>{{ $pay->investment_log_id }}</td>
                                     <td>{{ strtoupper($pay->trader_id) }}</td>
@@ -112,11 +122,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row justify-content-center">{{ $r_pay->links() }}</div>
-                    <?php
-                    #$user = auth()->user()->username;
-                    #print_r($r_pay);
-                    ?>
+                    {{--<div class="row justify-content-center">{{ $fr_pay->links() }}</div>--}}
                 </div>
             </div>
         </div>

@@ -113,9 +113,20 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
                                 <input type="hidden" name="payId" value="{{$payment->id}}">
                                 <input type="hidden" name="logId" value="{{$payment->investment_log_id}}">
                                 <input type="hidden" name="inv_type" value="{{$payment->investment_type}}">
-                                <input type="date" class="form-control" name="start_date" id="start_date" required>
                                 <input type="hidden" name="authType" value="confirm">
-                                <button type="submit" id="tSubBtn" class="btn btn-success">Confirm</button>
+                                <?php
+                                $time_diff = strtotime(date("Y-m-d")) - strtotime($payment->end_date);
+                                $days_diff = floor($time_diff / (3600 * 24));
+                                if ($payment->investment_type == "topup"){
+                                    echo '<button type="submit" id="tSubBtn0" class="btn btn-success">Confirm</button>';
+                                }elseif ($payment->investment_type == "rollover" && in_array($days_diff, range(0,14)) ) {
+                                    echo '<input type="date" class="form-control" style="background:transparent;border-bottom:1px #E2A921 solid;" name="start_date" id="start_date" value="'.$payment->end_date.'" required readonly>
+                                        <button type="submit" id="tSubBtn0" class="btn btn-success">Confirm</button>';
+                                }else {
+                                    echo '<input type="date" class="form-control" name="start_date" id="start_date" required>
+                                        <button type="submit" id="tSubBtn" class="btn btn-success">Confirm</button>';
+                                }
+                                ?>
                                 <span id="daates" class="text-warning"></span>
                             </form>
                             @endif
@@ -140,11 +151,12 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
             var numDays = Math.round(daysDiff);
             if (numDays < 21 && numDays >= 0) {
                 $('#tSubBtn').prop("disabled", false);
-                $('#daates').html("");
+                //$('#daates').html("Number of days : "+numDays);
             }
             if (numDays > 21) {
-                $('#tSubBtn').prop("disabled", true);
-                $('#daates').html("<strong>Warning!</strong> You can't backdate more than 3 weeks");
+                $('#tSubBtn').prop("disabled", false);
+                $('#daates').html("");
+                /*$('#daates').html("<strong>Warning!</strong> You can't backdate more than 3 weeks");*/
             }
             if (numDays < 0) {
                 $('#tSubBtn').prop("disabled", true);

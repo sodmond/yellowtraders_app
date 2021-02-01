@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendApplication;
+use App\Mail\SendCapitalApplication;
 use App\Mail\SendTransaction;
 use App\Payouts;
 use Illuminate\Support\Facades\Artisan;
@@ -30,10 +31,9 @@ class ApplicationsController extends Controller
         $this->trader_id = $trader_id;
     }
 
-    public function welcomePage()
-    {
-        return view('welcome');
-    }
+    public function welcomePage(){ return view('welcome'); }
+    public function newInvestors(){ return view('new_investors'); }
+    public function returnInvestors(){ return view('returning_investors'); }
 
     public function calRoi($amount)
     {
@@ -67,7 +67,7 @@ class ApplicationsController extends Controller
         }
         return 'Error';
     }
-    private function valAmount($amount, $trader_type, $topup = "")
+    private function valAmount($amount, $trader_type, $topup = 0)
     {
         if ($trader_type == 1 && $amount < 150000) {
             return 'Investment amount cannot be less than 150,000';
@@ -78,7 +78,7 @@ class ApplicationsController extends Controller
         if ($trader_type == 3 && $amount < 1000000 && $topup == 1) {
             return 'Investment amount cannot be less than 1,000,000';
         }
-        if ($trader_type == 3 && $amount < 2000000) {
+        if ($trader_type == 3 && $amount < 2000000 && $topup == 0) {
             return 'Investment amount cannot be less than 2,000,000';
         }
         return 'valid';
@@ -100,11 +100,13 @@ class ApplicationsController extends Controller
             'duration' => 'required|numeric',
             'purpose' => 'nullable|max:255',
         ]);
+        $bank_info = explode("-", $request->bank_name);
         $bank = [
             'trader_id' => $this->trader_id,
-            'bank_name' => $request->bank_name,
+            'bank_name' => $bank_info[0],
             'holder_name' => $data['full_name'],
             'account_number' => $request->account_number,
+            'bank_sort_code' => $bank_info[1],
             'created_at' => date('Y-m-d H:i:s'),
         ];
         $monthly_pcent = 0;
@@ -385,26 +387,44 @@ class ApplicationsController extends Controller
                         ->orWhere('email', $request->tidpne)
                         ->get();
             if (count($trader) > 0) {
-                $getInv = Investments::select('id', 'status', 'duration')
+                $getInv = Investments::select('id', 'status', 'duration', 'capital')
                             ->where('trader_id', $trader[0]->trader_id)
                             ->first();
                 $status = $getInv->status;
                 $inv_type = "rollover";
+                if ($getInv->capital == 0) {
+                    $pend_msg = "Your account has been archived, pls contact customer care for re-activation";
+                    return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
+                }
                 if ($status == 1){
                     $pend_msg = "You have a pending investment, check back later.";
                     return view('apply.topup_rollover', ['pend_msg' => $pend_msg]);
                 }
                 if ($status == 2){
                     $topupDays = [];
+                    $getInvLog = DB::table('investment_logs')->select('created_at', 'status')
+                                    ->where('investment_id', $getInv->id)
+                                    ->orderBy('created_at', 'desc')
+                                    ->first();
+                    $lastLogDate = strtotime($getInvLog->created_at);
                     for ($i=1; $i<$getInv->duration ; $i++) {
-                        $topupInv = Investments::selectRaw('DATEDIFF(CURRENT_DATE, DATE_ADD(start_date, INTERVAL '.$i.' MONTH)) AS daynum')
+                        $topupInv = Investments::select(DB::raw('DATE_ADD(start_date, INTERVAL '.$i.' MONTH) AS s_date'),
+                                        DB::raw('DATEDIFF(CURRENT_DATE, DATE_ADD(start_date, INTERVAL '.$i.' MONTH)) AS daynum'),
+                                        /*DB::raw('DATE_ADD(DATE_ADD(start_date, INTERVAL '.$i.' MONTH), INTERVAL 10 DAY)  AS exp_date')*/)
                                     ->where('id', $getInv->id)
                                     ->first();
                         $days = $topupInv->daynum;
+                        $topupStart = strtotime($topupInv->s_date);
+                        /*$exp_date = date_create($topupInv->s_date);
+                        date_add($exp_date,date_interval_create_from_date_string("10 days"));
+                        $topupEnd = strtotime(date_format($exp_date,"Y-m-d"));*/
                         if ($days < 1 || $days > 10){
                             $topupDays[] = 0;
                         }
-                        if ($days > 0 && $days <= 10){
+                        if ($days > 0 && $days <= 10 && $topupStart > $lastLogDate){
+                            $topupDays[] = 1;
+                        }
+                        if ($days > 0 && $days <= 10 && $lastLogDate > $topupStart && $getInvLog->status == 0 ){
                             $topupDays[] = 1;
                         }
                     }
@@ -519,11 +539,60 @@ class ApplicationsController extends Controller
         return view('apply.payment', ['err_msg' => 'Invalid credentials or Expired transaction ID']);
     }
 
-    // Optimize Application
-    public function optimizeApp()
+    // Capital Withdrawal
+    public function capitalWithdraw()
     {
-        Artisan::call('optimize');
-        dd("Application is now optimized");
+        return view('apply.withdraw_capital');
     }
 
+    public function capitalWithdrawAuth(Request $request)
+    {
+        if( isset($request->cwForm) ){
+            $this->validate($request, [
+                'trader_id'     => 'required|starts_with:inv_',
+                'full_name'     => 'required',
+                'email'         => 'required|email',
+                'amount'        => 'required|numeric',
+                'bank_stmt'     => 'required|mimes:pdf|max:5000',
+            ],[
+                'bank_stmt.mimes'           => 'Bank Statement must be in a PDF format',
+                'bank_stmt.uploaded'        => 'Bank Statement file size cannot exceed 5MB'
+            ]);
+            $bankpath = Storage::putFile('bank_stmt', $request->file('bank_stmt'));
+            $data = [
+                'trader_id'     => $request->trader_id,
+                'amount'        => $request->amount,
+                'bank_stmt'     => $bankpath,
+                'created_at'    => date('Y-m-d H:i:s'),
+            ];
+            $getBank = DB::table('bank_accounts')->select('bank_name', 'account_number')
+                        ->where('trader_id', $request->trader_id)->first();
+            DB::beginTransaction();
+            $addCapWit = DB::table('capital_request')->insert($data);
+            if ($addCapWit) {
+                DB::commit();
+                Mail::to($request->email)->cc('admin@yellowtraders.org')->queue(new SendCapitalApplication(
+                    $request->trader_id,
+                    $request->full_name,
+                    $request->amount,
+                    $request->amount_words,
+                    $getBank->bank_name,
+                    $getBank->account_number,
+                    $bankpath
+                ));
+                return view('apply.withdraw_capital', ['suc_msg' => 'Your capital withdrawal application has been submitted.']);
+            }
+            DB::rollBack();
+            return view('apply.withdraw_capital', ['err_msg' => 'A problem occured, please try again.']);
+        }
+        $tidpne = $request->tidpne;
+        $trader = Traders::join('investments', 'traders.trader_id', '=', 'investments.trader_id')
+                    ->where('traders.trader_id', $tidpne)
+                    ->orWhere('traders.phone', $tidpne)
+                    ->orWhere('traders.email', $tidpne)
+                    ->select('traders.trader_id', 'traders.full_name', 'traders.email', 'investments.amount', 'investments.amount_in_words', 'investments.status', 'investments.capital')
+                    ->first();
+
+        return response()->json(['trader' => $trader]);
+    }
 }

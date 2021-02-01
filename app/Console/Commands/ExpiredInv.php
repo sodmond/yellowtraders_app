@@ -40,8 +40,10 @@ class ExpiredInv extends Command
      */
     public function handle()
     {
-        $updateInv = Investments::where('end_date', '<', DB::raw('CURDATE()'))
-                    ->update(['status' => 0, 'pay_count' => 0]);
+        $updateInv = Investments::where([
+                ['end_date', '<', DB::raw('CURDATE()')],
+                ['status', '=', 2],
+                ])->update(['status' => 0, 'pay_count' => 0]);
         if ($updateInv) {
             Log::info('Exipred investments has been set to inactive!');
         }

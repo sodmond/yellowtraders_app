@@ -28,15 +28,15 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         $schedule->command('expiredInv:cron')
-                    #->everyMinute()
+                    #->everyMinute();
                     ->dailyAt('03:00')
                     ->timezone('Africa/Lagos');
 
         $schedule->command('payoutlist:cron')
-                    #->everyMinute()
+                    #->everyMinute();
                     ->hourly()
                     ->timezone('Africa/Lagos')
-                    ->between('03:00', '09:00');
+                    ->between('03:00', '10:00');
 
     }
 

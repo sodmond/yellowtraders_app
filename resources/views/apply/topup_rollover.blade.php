@@ -98,7 +98,10 @@
                         <div class="row">
                             <div class="col">
                                 <h4>{{ ucfirst($inv_type) }} Form</h4>
-                                <p>Fill in your the below to {{ $inv_type }} your investment:</p>
+                                <p>Fill in the form below to {{ $inv_type }} your investment:</p>
+                                @if ($inv_type == "rollover")
+                                    <p><strong>Note:</strong> If you're adding more funds to your previous capital, input the new total amount in the field.</p>
+                                @endif
                             </div>
                         </div>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

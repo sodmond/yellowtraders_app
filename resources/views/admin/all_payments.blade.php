@@ -52,6 +52,7 @@
                                     <th>Amount</th>
                                     <th>Date</th>
                                     <th>Action</th>
+                                    <th>Admin</th>
                                 </tr>
                             </thead>
                             <tbody id="resultTab" style="font-size:14px; font-weight:100;"></tbody>
@@ -145,6 +146,7 @@
                         let linkUrl = "payments/" + conv[0];
                         let rowlink = "<a href='"+linkUrl+"'><button class='btn btn-info' style='padding:7px;'>View</button></a>";
                         row += "<td>" + rowlink + "</td>";
+                        row += "<td>" + conv[6] + "</td>";
                         row += "</tr>";
                     });
                     $("#resultTab").html(row);

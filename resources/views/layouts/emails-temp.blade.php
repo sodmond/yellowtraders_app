@@ -36,7 +36,7 @@
             .content{
                 font-size: 16px;
                 padding: 10px;
-                background-color: #fafafa;
+                background-color: #fff;
             }
             table{
                 border:0;

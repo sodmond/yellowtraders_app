@@ -23,15 +23,51 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                     <p class="card-description">Account type is a <strong>{{ ucwords($trader_type) }} Trader</strong></p>
                     @if(auth()->user()->role != 'cs-agent')
                     <div>
-                        @if(auth()->user()->role == 'superuser')
-                        <a href="{{ url('/admin/edit_trader/'.$trader->id) }}" target="_blank">
-                            <button class="btn btn-success">Edit</button>
-                        </a>
-                        <a href="{{ url('/admin/delete_trader/'.$trader->id) }}">
-                            <button class="btn btn-danger">Delete</button>
-                        </a>
-                        @endif
                         <a href="{{ url('/admin/preview_mou/'.$inv->id) }}" target="_blank"><button class="btn btn-primary">Preview MOU</button></a>
+                        @if(auth()->user()->role == 'superuser')
+                            <a href="{{ url('/admin/edit_trader/'.$trader->id) }}" target="_blank">
+                                <button class="btn btn-warning">Edit</button>
+                            </a>
+                            <a href="{{ url('/admin/delete_trader/'.$trader->id) }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </a>
+                            @if($inv->status == 0 && $inv->capital == 0)
+                                <button class="btn btn-success" id="reactivateAcct" data-toggle="modal" data-target="#archTivate">Re-Activate Account</button>
+                            @else
+                                <button class="btn btn-secondary" id="archiveAcct" data-toggle="modal" data-target="#archTivate">Archive Account</button>
+                            @endif
+                        @endif
+                        <!-- Archive and Reactivate Modal -->
+                        <div class="modal fade" id="archTivate">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Modal Heading</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Modal body..
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <span id="loader"><img src="{{ asset('images/loader.gif') }}" width="25"> Loading...</span>
+                                        <form id="acctStatForm">
+                                            <input type="hidden" name="_token" id="acctStatTok" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="trader_id" id="trader_id" value="{{ $trader->trader_id }}">
+                                            <input type="hidden" name="acctStat" id="acctStat" value="">
+                                            <button type="submit" class="btn btn-success" id="acctStatBtn">Proceed</button>
+                                        </form>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     @endif
                 </div>
@@ -169,9 +205,9 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                             </thead>
                             <tbody style="font-size:14px;">
                                 <tr>
-                                    <td>{{ $inv->amount }}</td>
+                                    <td>{{ number_format($inv->amount) }}</td>
                                     <td>{{ $inv->amount_in_words }}</td>
-                                    <td>{{ $inv->monthly_roi }}</td>
+                                    <td>{{ number_format($inv->monthly_roi) }}</td>
                                     <td>{{ $inv->monthly_pcent }}</td>
                                     <td>{{ $inv->duration }}</td>
                                     <td>{{ $inv->purpose }}</td>
@@ -188,6 +224,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                     <div class="table-responsive" style="max-height:500px; overflow-y:scroll;">
                         <table class="table">
                             <thead style="font-size:15px;">
+                                <th></th>
                                 <th>Type</th>
                                 <th>Amount (&#8358;)</th>
                                 <th>Amount in Words</th>
@@ -201,6 +238,19 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                             <tbody style="font-size:14px;">
                                 @foreach($invLog as $log)
                                 <tr>
+                                    <td>
+                                        <?php
+                                            if ($log->status == 0) {
+                                                echo '<span class="text-danger"><i class="fa fa-times-circle-o"></i></span>';
+                                            }
+                                            if ($log->status == 1) {
+                                                echo '<span class="text-warning"><i class="fa fa-dot-circle-o"></i></span>';
+                                            }
+                                            if ($log->status == 2) {
+                                                echo '<span class="text-success"><i class="fa fa-check-circle-o"></i></span>';
+                                            }
+                                        ?>
+                                    </td>
                                     <td>{{ $log->investment_type }}</td>
                                     <td>{{ number_format($log->amount) }}</td>
                                     <td>{{ $log->amount_in_words }}</td>
@@ -224,6 +274,8 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     function clone(element) {
         var $temp = $("<input>");
@@ -234,5 +286,39 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
         alert("Copied " + element);
         $temp.remove();
     }
+    $('#reactivateAcct').click(function(){
+        $('#acctStat').val('react');
+        $('.modal-title').text("Reactivate Trader Account");
+        $('.modal-body').html("Do you want to reactivate trader <strong>"+$('#trader_id').val()+"</strong> account?");
+    });
+    $('#archiveAcct').click(function(){
+        $('#acctStat').val('arch');
+        $('.modal-title').text("Archive Trader Account");
+        $('.modal-body').html("Do you want to archive trader <strong>"+$('#trader_id').val()+"</strong> account?");
+    });
+    $('#loader').css('display', 'none');
+    $('#acctStatForm').submit(function(event) {
+        event.preventDefault();
+        $('#loader').css('display', 'block');
+        $('#acctStatBtn').attr('disabled');
+        let archtivate = $('#acctStat').val();
+        let token = $('#acctStaTok').val();
+        let trader_id = $('#trader_id').val();
+        $.ajax({
+            url: "archtivate/"+archtivate+"/"+trader_id,
+            type: "GET",
+            dataType: 'JSON',
+            success: function(data){
+                if ($.isEmptyObject(data.error)){
+                    //alert('Working '+trader_id);
+                    alert(data.msg);
+                    location.reload(true);
+                } else{
+                    alert("Error");
+                }
+                $("#loader").css('display', 'none');
+            }
+        });
+    });
 </script>
 @endsection

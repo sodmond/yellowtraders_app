@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Investments;
+use App\Mail\SendMou;
 use App\Traders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use PDF;
 
 class TraderProfileController extends Controller
 {
@@ -39,7 +42,29 @@ class TraderProfileController extends Controller
         $getTraderInfo = Investments::join('traders', 'investments.trader_id', '=', 'traders.trader_id')
                     ->where('investments.id', $id)
                     ->first();
+        $data = ['getTraderInfo' => $getTraderInfo];
+        $pdfMou = PDF::loadView('admin.preview_mou', $data)
+                    ->setPaper('a4')
+                    ->setOptions([
+                        'defaultFont' => "'Open Sans', sans-serif",
+                        'tempDir' => public_path(),
+                        'chroot'  => public_path(),
+                    ]);
+        $pdfMouName = 'mou/'.$getTraderInfo->trader_id.'.pdf';
+        Storage::put($pdfMouName, $pdfMou->output());
         return view('admin.preview_mou', ['getTraderInfo' => $getTraderInfo]);
+    }
+
+    public function genPdfMou($email, $trader_id)
+    {
+        if ($trader_id != "" && $email != "") {
+            $mouFile = 'mou/'.$trader_id.'.pdf';
+            Mail::to($email)->cc('mou@yellowtraders.org')->send(new SendMou($mouFile));
+            #Mail::to($email)->send(new SendMou($mouFile));
+            $msg = 'MOU sent to trader successfully';
+            return response()->json(['msg' => $msg]);
+        }
+        return response()->json(['msg' => '']);
     }
 
     public function editTrader($id)
@@ -127,5 +152,25 @@ class TraderProfileController extends Controller
             return redirect('/admin/junior_traders?msg=traderdelsuc');
         }
         return redirect('/admin/corporate_traders?msg=traderdelsuc');
+    }
+
+    public function archtivate($arstat, $trader_id)
+    {
+        /*$msg = $trader_id." - ".$arstat;
+        return response()->json(['msg' => $msg]);*/
+        //$ar = $arstat;
+        $invmnt = Investments::select('status', 'capital')->where('trader_id', $trader_id)->first();
+        if ($arstat = "arch" && $invmnt->status != 0 && $invmnt->capital == 1) {
+            return response()->json(['msg' => "Error! You can't archive an active trader account."]);
+        }
+        if ($arstat = "arch" && $invmnt->status == 0 && $invmnt->capital == 1) {
+            Investments::where('trader_id', $trader_id)->update(['capital' => 0]);
+            return response()->json(['msg' => 'Trader account has been archived successfully.']);
+        }
+        if ($arstat = "react" && $invmnt->status == 0 && $invmnt->capital == 0) {
+            Investments::where('trader_id', $trader_id)->update(['capital' => 1]);
+            return response()->json(['msg' => 'Trader account has been reactivated successfully.']);
+        }
+        return response()->json(['msg' => 'Error! Action not completed']);
     }
 }

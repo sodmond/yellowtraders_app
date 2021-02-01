@@ -12,6 +12,8 @@
 */
 
 Route::get('/', 'ApplicationsController@welcomePage');
+Route::get('/new_investors', 'ApplicationsController@newInvestors');
+Route::get('/returning_investors', 'ApplicationsController@returnInvestors');
 
 Auth::routes();
 
@@ -42,6 +44,8 @@ Route::post('/apply/topup_rollover', 'ApplicationsController@tuRoHomeVal');
 Route::get('/apply/payment', 'ApplicationsController@payment');
 Route::post('/apply/payment', 'ApplicationsController@paymentVal');
 Route::get('/apply/calRoi/{amount}', 'ApplicationsController@calRoi');
+Route::get('/apply/withdraw_capital', 'ApplicationsController@capitalWithdraw');
+Route::post('/apply/withdraw_capital', 'ApplicationsController@capitalWithdrawAuth');
 
 /* Admin Routes */
 Route::get('/admin/all_traders', 'TradersController@allTraders');
@@ -51,10 +55,14 @@ Route::get('/admin/corporate_traders', 'TradersController@corporate');
 Route::get('/admin/search_trader', 'TradersController@searchTraders');
 Route::post('/admin/search_trader', 'TradersController@search');
 Route::get('/admin/traders_export/{id}', 'TradersController@exportTraders')->name('traders_export');
+Route::get('/admin/inactive_investors', 'TradersController@inactive');
+Route::get('/admin/archived_investors', 'TradersController@archived');
 
 Route::get('/admin/trader_profile', 'TraderProfileController@index');
+Route::get('/admin/trader_profile/archtivate/{arstat}/{trader_id}', 'TraderProfileController@archtivate');
 Route::get('/admin/trader_profile/{id}', 'TraderProfileController@show');
 Route::get('/admin/preview_mou/{id}', 'TraderProfileController@getMou');
+Route::get('/admin/preview_mou/send/{email}/{trader_id}', 'TraderProfileController@genPdfMou');
 Route::get('/admin/edit_trader/{id}', 'TraderProfileController@editTrader');
 Route::post('/admin/edit_trader', 'TraderProfileController@updateTrader');
 Route::get('/admin/delete_trader/{id}', 'TraderProfileController@deleteTrader');
@@ -63,6 +71,7 @@ Route::post('/admin/delete_trader', 'TraderProfileController@confirmTraderdelete
 Route::get('/admin/all_payments', 'PaymentController@all_payments');
 Route::get('/admin/payments', 'PaymentController@recieved_payments');
 Route::get('/admin/payments/{id}', 'PaymentController@viewPayment');
+Route::get('/admin/payments_filter', 'PaymentController@filter_payments');
 Route::post('/admin/payments', 'PaymentController@authPayment');
 Route::post('/admin/searchpayments', 'PaymentController@searchPayment')->name('searchPayment');
 
@@ -75,6 +84,5 @@ Route::get('/emails/payout', function (){
     return view('emails.received_payments', ['amount'=>800000, 'monthly_roi'=>160000]);
 });*/
 
-
-Route::get('/optimize-app', 'ApplicationsController@optimizeApp');
+//Route::get('/optimize-app', 'ApplicationsController@optimizeApp');
 

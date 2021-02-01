@@ -1,9 +1,9 @@
 @extends('layouts.dark-theme')
 
-<title>Search Page</title>
+<title>List of Archived Investors</title>
 
 @section('page-header')
-    <h3>Search Page</h3>
+    <h3>List of Archived Investors</h3>
 @endsection
 
 @section('content')
@@ -35,11 +35,18 @@
             </div>
             <div class="card">
                 <div class="card-header card-header-primary" style="background:#E2A921;">
-                    <div class="card-title" style="color:#000;"><h4>Search results</h4></div>
+                    <div class="card-title" style="color:#000;"><h4>All Archived Investors</h4></div>
                 </div>
 
                 <div class="card-body">
-
+                    {{--<div>
+                        <a href="{{ url('/admin/traders_export/1') }}"><button class="btn btn-secondary">Export List</button></a>
+                    </div>--}}
+                    @isset($_GET['msg'])
+                        @if ($_GET['msg'] == "traderdelsuc")
+                            <div class="alert alert-success">Trader has been deleted successfully</div>
+                        @endif
+                    @endisset
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="text-primary">
@@ -50,7 +57,6 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            @isset($tradersList)
                             <tbody style="font-size:15px; font-weight:100;">
                                 @foreach ($tradersList as $trader)
                                 <tr>
@@ -61,12 +67,9 @@
                                 </tr>
                                 @endforeach
                             </tbody>
-                            @endisset
                         </table>
-                        @if( (isset($tradersList) && $tradersList->count() == 0) || !isset($tradersList))
-                        <p class="text-warning" style="text-align:center; font-style:italic;">No record found</p>
-                        @endif
                     </div>
+                    <div class="row justify-content-center">{{ $tradersList->links() }}</div>
                 </div>
             </div>
         </div>

@@ -157,7 +157,7 @@ $curPayinChart = array(
           </div>
         </div>
     </div>
-
+{{--
     <div class="row">
         <div class="col-xl col-lg-12">
             <div class="card card-chart">
@@ -202,7 +202,7 @@ $curPayinChart = array(
             <a href="{{ url('/admin/report_analysis') }}"><button class="btn btn-info">View Detailed Reports</button></a>
         </div>
     </div>
-
+--}}
     <div class="row">
         <div class="col-md">
             <div class="card">

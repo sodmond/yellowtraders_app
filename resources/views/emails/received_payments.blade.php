@@ -5,9 +5,9 @@
     <p>Hello,</p>
     <p>Your {{ $inv_type }} investment of the amount of
     @if ($inv_type == "topup")
-        {{ ($newInv["amount"] - $investment['amount']) }}
+        &#8358;{{ number_format($newInv["amount"] - $investment['amount']) }}
     @else
-        {{ $investment['amount'] }}
+        &#8358;{{ number_format($investment['amount']) }}
     @endif
     has been confirmed. See details below:</p>
     <table>
@@ -19,7 +19,7 @@
             @if ($inv_type == "topup")
             <tr>
                 <td style="text-align:right;"><strong>Total Invested Amount:</strong></td>
-                <td style="text-align:left;">{{ $newInv["amount"] }}</td>
+                <td style="text-align:left;">&#8358;{{ number_format($newInv["amount"]) }}</td>
             </tr>
             <tr>
                 <td style="text-align:right;"><strong>Monthly %:</strong></td>
@@ -27,12 +27,12 @@
             </tr>
             <tr>
                 <td style="text-align:right;"><strong>Monthly ROI:</strong></td>
-                <td style="text-align:left;">{{ $newInv["monthly_roi"] }}</td>
+                <td style="text-align:left;">&#8358;{{ number_format($newInv["monthly_roi"]) }}</td>
             </tr>
             @else
             <tr>
                 <td style="text-align:right;"><strong>Invested Amount:</strong></td>
-                <td style="text-align:left;">{{ $investment["amount"] }}</td>
+                <td style="text-align:left;">&#8358;{{ number_format($investment["amount"]) }}</td>
             </tr>
             <tr>
                 <td style="text-align:right;"><strong>Monthly %:</strong></td>
@@ -40,9 +40,8 @@
             </tr>
             <tr>
                 <td style="text-align:right;"><strong>Monthly ROI:</strong></td>
-                <td style="text-align:left;">{{ $investment["monthly_roi"] }}</td>
+                <td style="text-align:left;">&#8358;{{ number_format($investment["monthly_roi"]) }}</td>
             </tr>
-            @endif
             <tr>
                 <td style="text-align:right;"><strong>Start Date:</strong></td>
                 <td style="text-align:left;">{{ $investment["start_date"] }}</td>
@@ -51,6 +50,7 @@
                 <td style="text-align:right;"><strong>End Date:</strong></td>
                 <td style="text-align:left;">{{ $investment["end_date"] }}</td>
             </tr>
+            @endif
         </tbody>
     </table>
     <div style="text-align: justify;">
