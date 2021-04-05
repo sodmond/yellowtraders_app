@@ -11,6 +11,10 @@
 |
 */
 
+use App\Traders;
+use App\User;
+use Illuminate\Support\Facades\Hash;
+
 Route::get('/', 'ApplicationsController@welcomePage');
 Route::get('/new_investors', 'ApplicationsController@newInvestors');
 Route::get('/returning_investors', 'ApplicationsController@returnInvestors');
@@ -61,6 +65,7 @@ Route::get('/admin/archived_investors', 'TradersController@archived');
 Route::get('/admin/trader_profile', 'TraderProfileController@index');
 Route::get('/admin/trader_profile/archtivate/{arstat}/{trader_id}', 'TraderProfileController@archtivate');
 Route::get('/admin/trader_profile/{id}', 'TraderProfileController@show');
+Route::post('/admin/trader_profile/updateActInv', 'TraderProfileController@updateActInv');
 Route::get('/admin/preview_mou/{id}', 'TraderProfileController@getMou');
 Route::get('/admin/preview_mou/send/{email}/{trader_id}', 'TraderProfileController@genPdfMou');
 Route::get('/admin/edit_trader/{id}', 'TraderProfileController@editTrader');
@@ -74,6 +79,7 @@ Route::get('/admin/payments/{id}', 'PaymentController@viewPayment');
 Route::get('/admin/payments_filter', 'PaymentController@filter_payments');
 Route::post('/admin/payments', 'PaymentController@authPayment');
 Route::post('/admin/searchpayments', 'PaymentController@searchPayment')->name('searchPayment');
+Route::get('/admin/payments_confirmed', 'PaymentController@confirmedPayments');
 
 
 /* Preview email template views
@@ -86,3 +92,24 @@ Route::get('/emails/payout', function (){
 
 //Route::get('/optimize-app', 'ApplicationsController@optimizeApp');
 
+/*
+** Migrate traders to users
+**
+Route::middleware('auth')->get('/migrate-trader-info-to-users', function(){
+    $trader = Traders::all();
+    foreach ($trader as $row) {
+        //echo $row->full_name. '<br>';
+        $data = [
+            'name'      => $row->full_name,
+            'email'     => $row->email,
+            'username'  => $row->trader_id,
+            'password'  => Hash::make($row->phone),
+            'role'      => 'trader'
+        ];
+        User::insertOrIgnore($data);
+    }
+    //print_r($trader->toArray());
+    //return response()->json($trader->toArray());
+    dd('Traders account migrated successfully');
+});
+*/

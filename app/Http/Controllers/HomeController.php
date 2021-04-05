@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'nta']);
     }
 
     /**
@@ -179,7 +179,7 @@ class HomeController extends Controller
 
     public function register()
     {
-        $users =  User::all();
+        $users =  User::all()->where('role', '<>', 'trader');
         return view('admin.register', ['users' => $users]);
     }
 

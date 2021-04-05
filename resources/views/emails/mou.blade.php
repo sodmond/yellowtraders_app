@@ -2,10 +2,16 @@
 
 @section('content')
 <div style="margin: 50px 10px; text-align:justify;">
-    <p>Hello,</p>
-    <p>Kindly find your MOU in the attached, this MOU serves as a formal agreement between Yellow Traders and
-        its investor in any case of trade which doesn't favour us</p>
-    <p>Note that MOU stands for <strong>Memorandum of Understanding</strong> and you can print it out as evidence.</p>
-    <p>Regards,<br>Yellow Traders</p>
+    <p>Dear Investor,</p>
+
+    <p>Thank you for making the decision to invest with us.</p>
+
+    <p>Kindly find attached your MOU (Memorandum of Understanding).</p>
+
+    <p>This MOU serves as a formal agreement between Yellow Traders and it’s Investor. So we urge you to go through the document.</p>
+
+    <p>Once again, thank you for your investment.</p>
+
+    <p>Best Regards,<br>
 </div>
 @endsection

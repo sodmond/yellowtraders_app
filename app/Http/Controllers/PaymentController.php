@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Mail;
 class PaymentController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'nta']);
     }
 
     public function all_payments()
@@ -23,6 +23,34 @@ class PaymentController extends Controller
                 ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'received_payments.admin', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
                 ->paginate(10);
         return view('admin.all_payments', ['all_pay' => $all_pay]);
+    }
+
+    public function confirmedPayments(Request $request)
+    {
+        if (isset($_GET['ldate'])) {
+            $ldate = $_GET['ldate'];
+            $r_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'received_payments.admin', 'received_payments.updated_at', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->where([
+                    ['received_payments.status', 2],
+                    [DB::raw('DATE(received_payments.updated_at)'), $ldate],
+                ])
+                ->paginate(10);
+            if ($request->ajax()) {
+                return view('admin.payments_confirmed_filtered', compact('r_pay'));
+            }
+            return view('admin.payments_confirmed', compact('r_pay'));
+        }
+        $r_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'received_payments.admin', 'received_payments.updated_at', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->where('received_payments.status', 2)
+                ->orderBy('received_payments.updated_at', 'asc')
+                ->paginate(10);
+        return view('admin.payments_confirmed', ['r_pay' => $r_pay]);
     }
 
     public function recieved_payments()
@@ -36,10 +64,23 @@ class PaymentController extends Controller
         return view('admin.payments', ['r_pay' => $r_pay]);
     }
 
-    public function filter_payments()
+    public function filter_payments(Request $request)
     {
         if (isset($_GET['typ'])) {
-            return view('admin.payments_filter');
+            $inv_type = $_GET['typ'];
+            $fr_pay = DB::table('received_payments')
+                ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
+                ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id')
+                ->where([
+                    ['received_payments.status', 1],
+                    ['investment_logs.investment_type', $inv_type],
+                ])
+                ->paginate(10);
+            if ($request->ajax()) {
+                return view('admin.payments_filter_result', compact('fr_pay'));
+            }
+            return view('admin.payments_filter', compact('fr_pay'));
         }
         return redirect('/admin/payments');
     }
@@ -122,7 +163,7 @@ class PaymentController extends Controller
             DB::beginTransaction();
             DB::table('received_payments')->where('investment_log_id', $logId)->update(['status' => 0, 'admin' => auth()->user()->username, 'updated_at' => date('Y-m-d H:i:s')]);
             DB::table('investment_logs')->where('id', $logId)->update(['status' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
-            #Investments::where('id', $invId)->update(['status' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
+            Investments::where('id', $invId)->update(['status' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
             DB::commit();
             #Mail::to($data['email'])->send(new SendApplication($data, $bank, $investment));
             return redirect('/admin/payments/'.$payId.'?msg=error');
@@ -144,7 +185,7 @@ class PaymentController extends Controller
         $r_pay = DB::table('received_payments')
                 ->join('investment_logs', 'received_payments.investment_log_id', '=', 'investment_logs.id')
                 ->join('investments', 'investment_logs.investment_id', '=', 'investments.id')
-                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id', 'received_payments.admin')
+                ->select('received_payments.id', 'received_payments.created_at', 'received_payments.investment_log_id', 'investment_logs.investment_type', 'investment_logs.amount', 'investments.trader_id', 'received_payments.admin', 'received_payments.updated_at')
                 ->where('investments.trader_id', $searchValue)
                 ->orderBy('received_payments.created_at', 'desc')
                 ->get();

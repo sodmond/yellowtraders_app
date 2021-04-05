@@ -149,14 +149,14 @@ $getTrader = App\Traders::where('trader_id', $payment->trader_id)->first();
             var timeDiff = today.getTime() - sDate.getTime();
             var daysDiff = timeDiff / (1000 * 3600 * 24);
             var numDays = Math.round(daysDiff);
-            if (numDays < 21 && numDays >= 0) {
-                $('#tSubBtn').prop("disabled", false);
-                //$('#daates').html("Number of days : "+numDays);
-            }
-            if (numDays > 21) {
+            if (numDays < 25 && numDays >= 0) {
                 $('#tSubBtn').prop("disabled", false);
                 $('#daates').html("");
-                /*$('#daates').html("<strong>Warning!</strong> You can't backdate more than 3 weeks");*/
+                //$('#daates').html("Number of days : "+numDays);
+            }
+            if (numDays > 25) {
+                $('#tSubBtn').prop("disabled", true);
+                $('#daates').html("<strong>Warning!</strong> You can't backdate more than 25 days");
             }
             if (numDays < 0) {
                 $('#tSubBtn').prop("disabled", true);

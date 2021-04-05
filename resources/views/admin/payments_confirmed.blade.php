@@ -1,22 +1,18 @@
 @extends('layouts.dark-theme')
 
-<title>Filtered Unconfirmed Received Payments</title>
+<title>Confirmed Received Payments</title>
 
 @section('page-header')
-    <h3>Filtered Unconfirmed Received Payments</h3>
+    <h3>Confirmed Received Payments</h3>
 @endsection
 
 @section('content')
-<?php
-$inv_type = $_GET['typ'];
-?>
 <style type="text/css">
     .btn{
         padding: 10px;
     }
 </style>
 <div class="container">
-    <input type="hidden" id="invType" value="{{ $inv_type }}">
     <div class="row">
         <div class="col-md">&nbsp;</div>
         <div class="col-md">
@@ -56,6 +52,8 @@ $inv_type = $_GET['typ'];
                                     <th>Amount</th>
                                     <th>Date</th>
                                     <th>Action</th>
+                                    <th>Admin</th>
+                                    <th>Last Updated</th>
                                 </tr>
                             </thead>
                             <tbody id="resultTab" style="font-size:14px; font-weight:100;"></tbody>
@@ -71,27 +69,65 @@ $inv_type = $_GET['typ'];
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header card-header-warning" style="background:#E2A921;">
-                    <div class="card-title" style="font-weight:500;"><h4>List of Unconfirmed <em>{{$inv_type}}</em> Payments</h4></div>
+                    <div class="card-title" style="font-weight:500;"><h4>List of Confirmed Payments</h4></div>
                 </div>
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md">
-                            <span style="font-size:16px; font-weight:100;">Filter by Investment Type:</span>
-                            <span>
-                                <a href="{{ url('/admin/payments_filter?typ=new') }}"><button class="btn btn-primary" style="padding:5px;">New</button></a>
-                                <a href="{{ url('/admin/payments_filter?typ=topup') }}"><button class="btn btn-warning" style="padding:5px;">Topup</button></a>
-                                <a href="{{ url('/admin/payments_filter?typ=rollover') }}"><button class="btn btn-info" style="padding:5px;">Rollover</button></a>
-                            </span>
+                        <div class="col-md-6" style="text-align: left;">
+                            <form class="form-inline" method="GET" action="payments_confirmed" id="pcf_form">
+                                <span style="font-size:16px; font-weight:100;">Filter by Last Update:</span> &nbsp; <input type="date" class="form-control" id="ldate" name="ldate" required>
+                                <a href="{{ url('/admin/payments_confirmed') }}"><button type="button" class="btn btn-warning" style="padding:5px;">Reset</button></a>
+                            </form>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <a href="{{ url('/admin/payments') }}"><button class="btn btn-warning">Uncomfirmed Payments</button></a>
+                            <a href="{{ url('/admin/all_payments') }}"><button class="btn btn-default">All Received Payments</button></a>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md">
-                            <div class="table-responsive" id="fpr_container">
-                                @include('admin.payments_filter_result')
-                            </div>
-                        </div>
+                    @if (isset($_GET['ldate']))
+                    <div class="table-responsive" id="fpr_container">
+                        @include('admin.payments_confirmed_filtered')
                     </div>
+                    @else
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Log ID</th>
+                                    <th>Trader ID</th>
+                                    <th>Type</th>
+                                    <th>Amount (&#8358;)</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>Admin</th>
+                                    <th>Last Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size:14px; font-weight:100;">
+                                @foreach($r_pay as $pay)
+                                <tr>
+                                    <td>{{ $pay->investment_log_id }}</td>
+                                    <td>{{ strtoupper($pay->trader_id) }}</td>
+                                    <td>{{ $pay->investment_type }}</td>
+                                    <td>{{ number_format($pay->amount) }}</td>
+                                    <td>{{ $pay->created_at }}</td>
+                                    <td>
+                                        <a href="{{ url('/admin/payments/'.$pay->id) }}"><button class="btn btn-info" style="padding:7px;">View</button></a>
+                                    </td>
+                                    <td>{{ $pay->admin }}</td>
+                                    <td>{{ $pay->updated_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row justify-content-center">{{ $r_pay->links() }}</div>
+                    @endif
+                    <?php
+                    #$user = auth()->user()->username;
+                    #print_r($r_pay);
+                    ?>
                 </div>
             </div>
         </div>
@@ -99,6 +135,9 @@ $inv_type = $_GET['typ'];
 </div>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <script>
+    $('#ldate').change(function () {
+        $('#pcf_form').submit();
+    })
     $(window).on('hashchange', function() {
         if (window.location.hash) {
             var page = window.location.hash.replace('#', '');
@@ -113,7 +152,7 @@ $inv_type = $_GET['typ'];
     $(document).ready(function()
     {
         $('#listloader').css('display', 'none');
-        $(document).on('click', '.pagination a',function(event)
+        $(document).on('click', '#mPag .pagination a',function(event)
         {
             event.preventDefault();
 
@@ -127,13 +166,15 @@ $inv_type = $_GET['typ'];
         });
 
     });
-
+    const urlString = window.location.href;
+    const urlParams = new URL(urlString);
     function getData(page){
-        let invType = $('#invType').val();
+        let cur_ldate = urlParams.searchParams.get('ldate');
         $('#listloader').css('display', 'block');
+        $('#ajaxURL').text('?ldate=' + cur_ldate + '&page=' + page);
         $.ajax(
         {
-            url: '?typ=' + invType + '&page=' + page,
+            url: '?ldate=' + cur_ldate + '&page=' + page,
             type: "get",
             datatype: "html"
         }).done(function(data){
@@ -142,6 +183,7 @@ $inv_type = $_GET['typ'];
             $('#listloader').css('display', 'none');
         }).fail(function(jqXHR, ajaxOptions, thrownError){
               alert('No response from server');
+              $('#listloader').css('display', 'none');
         });
     }
     $("#searchResult").css('display', 'none');
@@ -177,6 +219,8 @@ $inv_type = $_GET['typ'];
                         let linkUrl = "payments/" + conv[0];
                         let rowlink = "<a href='"+linkUrl+"'><button class='btn btn-info' style='padding:7px;'>View</button></a>";
                         row += "<td>" + rowlink + "</td>";
+                        row += "<td>" + conv[6] + "</td>";
+                        row += "<td>" + conv[7] + "</td>";
                         row += "</tr>";
                     });
                     $("#resultTab").html(row);

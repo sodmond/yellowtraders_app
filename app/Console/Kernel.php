@@ -38,6 +38,9 @@ class Kernel extends ConsoleKernel
                     ->timezone('Africa/Lagos')
                     ->between('03:00', '10:00');
 
+        /*$schedule->command('queue:work --tries=3')
+                    ->cron('* * * * *')
+                    ->withoutOverlapping(5);*/
     }
 
     /**

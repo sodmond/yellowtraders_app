@@ -14,7 +14,7 @@ class TradersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'nta']);
     }
 
     public function allTraders()

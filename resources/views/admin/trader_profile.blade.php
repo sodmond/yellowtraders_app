@@ -202,6 +202,7 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                 <th>Purpose</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>...</th>
                             </thead>
                             <tbody style="font-size:14px;">
                                 <tr>
@@ -213,9 +214,61 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                                     <td>{{ $inv->purpose }}</td>
                                     <td>{{ $inv->start_date }}</td>
                                     <td>{{ $inv->end_date }}</td>
+                                    <td>@if(auth()->user()->role == 'superuser')
+                                        <button class="btn btn-info" style="padding:7px;" id="updtActInv" data-toggle="modal" data-target="#actInvModal"> Edit </button>
+                                        @endif
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <!-- Active Investment Modal -->
+                        <div class="modal fade" id="actInvModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content" style="background:#202940; color:#fff;">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Update Investment</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        <form method="POST" action="updateActInv" id="actInvForm" style="padding:5px;">
+                                            <input type="hidden" name="_token" id="acctStatTok" value="{{ csrf_token() }}">
+                                            <div class="row">
+                                                <div class="col-sm-4"><strong>Trader ID:</strong></div>
+                                                <div class="col-sm-8"><input type="text" class="form-control" name="trader_id" id="trader_id" value="{{ $trader->trader_id }}" style="color:#000;" readonly></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4"><strong>Amount:</strong></div>
+                                                <div class="col-sm-8"><input type="number" class="form-control" name="amount" id="amount" value="{{ $inv->amount }}"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4"><strong>Amount in Words:</strong></div>
+                                                <div class="col-sm-8"><input type="text" class="form-control" name="amount_words" id="amount_words" value="{{ $inv->amount_in_words }}"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4"><strong>Monthly %:</strong></div>
+                                                <div class="col-sm-8"><input type="number" class="form-control" name="month_pcent" id="month_pcent" value="{{ $inv->monthly_pcent }}"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4"><strong>Monthly ROI:</strong></div>
+                                                <div class="col-sm-8"><input type="number" class="form-control" name="month_roi" id="month_roi" value="{{ $inv->monthly_roi }}"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <input type="hidden" id="calRoi" value="{{ url('apply/calRoi/') }}">
+                                        <button type="button" class="btn btn-success" id="updateInv">Update</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     @else
                         <p class="text-warning" style="text-align:center; font-style:italic;">No active investment</p>
@@ -319,6 +372,9 @@ $trader_type = DB::table('trader_types')->where('id', $trader->trader_type)->val
                 $("#loader").css('display', 'none');
             }
         });
+    });
+    $('#updateInv').click(function () {
+        $('#actInvForm').submit();
     });
 </script>
 @endsection

@@ -72,11 +72,11 @@
             <div class="card" id="investor">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md">
                             <p><img src="{{ asset('storage/'.$image)}}" class="img-thumbnail img-fluid"></p>
                             <p><strong>Trader ID:</strong> {{ strtoupper($trader_id) }}</p>
                         </div>
-                        <div class="col-md-8">
+                        {{--<div class="col-md-8">
                             <p><strong>Full Name:</strong> {{ ucwords($full_name) }}</p>
                             <p><strong>Marital Status:</strong> {{ ucwords($marital_status) }}</p>
                             <p><strong>Gender:</strong> {{ ucwords($gender) }}</p>
@@ -89,7 +89,7 @@
                             <p><strong>City:</strong> {{ ucwords($lga) }}</p>
                             <p><strong>Email:</strong> {{ $email }}</p>
                             <p><strong>Referral:</strong> {{ $referral }}</p>
-                        </div>
+                        </div>--}}
                     </div>
 
                     <hr>

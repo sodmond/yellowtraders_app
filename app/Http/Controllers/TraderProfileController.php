@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Investments;
 use App\Mail\SendMou;
 use App\Traders;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ use PDF;
 class TraderProfileController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'nta']);
     }
 
     public function index()
@@ -145,6 +146,7 @@ class TraderProfileController extends Controller
         Investments::where('trader_id', $trader_id)->delete();
         DB::table('bank_accounts')->where('trader_id', $trader_id)->delete();
         Traders::destroy($id);
+        User::where('username', $trader_id)->delete();
         if ($type == 1) {
             return redirect('/admin/yellow_traders?msg=traderdelsuc');
         }
@@ -172,5 +174,27 @@ class TraderProfileController extends Controller
             return response()->json(['msg' => 'Trader account has been reactivated successfully.']);
         }
         return response()->json(['msg' => 'Error! Action not completed']);
+    }
+
+    public function updateActInv(Request $request)
+    {
+        $this->validate($request, [
+            'trader_id'     => 'required',
+            'amount'        => 'required|numeric',
+            'amount_words'  => 'required',
+            'month_pcent'   => 'required|numeric',
+            'month_roi'     => 'required|numeric',
+        ]);
+        $data = ['amount' => $request->amount, 'amount_in_words' => $request->amount_words,
+                'monthly_roi' => $request->month_roi, 'monthly_pcent' => $request->month_pcent,
+                'updated_at' => date('Y-m-d H:i:s')];
+        DB::beginTransaction();
+        $updtInv = Investments::where('trader_id', $request->trader_id)->update($data);
+        if ($updtInv) {
+            DB::commit();
+            return redirect()->back()->with('message', 'Current investment updated successfully');
+        }
+        DB::rollBack();
+        return redirect()->back()->with('message', 'Current investment updated successfully');
     }
 }

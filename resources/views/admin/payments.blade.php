@@ -72,16 +72,17 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <a href="{{ url('/admin/all_payments') }}"><button class="btn">All Received Payments</button></a>
-                        </div>
-                        <div class="col-md-9">
-                            <span style="font-size:16px; font-weight:100;">Filter by Investments:</span>
+                        <div class="col-md-6">
+                            <span style="font-size:16px; font-weight:100;">Filter by Investment Type:</span>
                             <span>
                                 <a href="{{ url('/admin/payments_filter?typ=new') }}"><button class="btn btn-primary" style="padding:5px;">New</button></a>
                                 <a href="{{ url('/admin/payments_filter?typ=topup') }}"><button class="btn btn-warning" style="padding:5px;">Topup</button></a>
                                 <a href="{{ url('/admin/payments_filter?typ=rollover') }}"><button class="btn btn-info" style="padding:5px;">Rollover</button></a>
                             </span>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <a href="{{ url('/admin/payments_confirmed') }}"><button class="btn btn-success">Comfirmed Payments</button></a>
+                            <a href="{{ url('/admin/all_payments') }}"><button class="btn">All Received Payments</button></a>
                         </div>
                     </div>
                     <div class="table-responsive">

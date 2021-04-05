@@ -72,8 +72,12 @@
                 </div>
 
                 <div class="card-body">
-                    <div>
-                        <a href="{{ url('/admin/payments') }}"><button class="btn">Unconfirmed Payments</button></a>
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <a href="{{ url('/admin/payments') }}"><button class="btn btn-warning">Unconfirmed Payments</button></a>
+                            <a href="{{ url('/admin/payments_confirmed') }}"><button class="btn btn-success">Comfirmed Payments</button></a>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table">

@@ -15,7 +15,9 @@ use App\Mail\SendApplication;
 use App\Mail\SendCapitalApplication;
 use App\Mail\SendTransaction;
 use App\Payouts;
+use App\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
 
 class ApplicationsController extends Controller
 {
@@ -152,7 +154,8 @@ class ApplicationsController extends Controller
         ];
         $inv_log = DB::table('investment_logs')->insertGetId($investment1);
         $trader = Traders::create($data);
-        if ($new_bank && $new_inv && $inv_log && $trader) {
+        $userAcct = User::forceCreate(['name'=>$data['full_name'], 'email'=>$data['email'], 'username'=>$data['trader_id'], 'password' => Hash::make($data['phone']), 'role'=>'trader']);
+        if ($new_bank && $new_inv && $inv_log && $trader && $userAcct) {
             DB::commit();
             Mail::to($data['email'])->send(new SendApplication($data, $bank, $investment));
             Mail::to($data['email'])->send(new SendTransaction($this->trader_id, $request->amount, $inv_log, 'new'));
@@ -385,10 +388,10 @@ class ApplicationsController extends Controller
             $trader = Traders::where('trader_id', $request->tidpne)
                         ->orWhere('phone', $request->tidpne)
                         ->orWhere('email', $request->tidpne)
-                        ->get();
-            if (count($trader) > 0) {
+                        ->first();
+            if ($trader) {
                 $getInv = Investments::select('id', 'status', 'duration', 'capital')
-                            ->where('trader_id', $trader[0]->trader_id)
+                            ->where('trader_id', $trader->trader_id)
                             ->first();
                 $status = $getInv->status;
                 $inv_type = "rollover";
@@ -434,7 +437,7 @@ class ApplicationsController extends Controller
                     }
                     $inv_type = "topup";
                 }
-                $trader_arr = json_decode(json_encode($trader[0]), true);
+                $trader_arr = json_decode(json_encode($trader), true);
                 return view('apply.topup_rollover', array_merge($trader_arr, ['inv_id' => $getInv->id,'inv_type' => $inv_type]));
             }
             $err_msg = "You need to register with us before you can Topup or Rollover";
